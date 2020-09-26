@@ -1,16 +1,11 @@
 package main
 
 import (
-  "log"
-  "os"
-  "github.com/urfave/cli"
+	"os"
+
+	"gopkg.in/urfave/cli.v2"
 )
 
 func main() {
-  app := cli.NewApp()
-
-  err := app.Run(os.Args)
-  if err != nil {
-    log.Fatal(err)
-  }
+	(&cli.App{}).Run(os.Args)
 }
