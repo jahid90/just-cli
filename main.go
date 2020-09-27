@@ -5,7 +5,8 @@ import (
 	"log"
 	"os"
 
-	"gopkg.in/urfave/cli.v2"
+	"github.com/jahid90/just/cmd/hello"
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
@@ -17,6 +18,8 @@ func main() {
 			return nil
 		},
 	}
+
+	app.Commands = hello.GetCommands()
 
 	err := app.Run(os.Args)
 	if err != nil {
