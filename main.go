@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/jahid90/just/cmd/hello"
+	"github.com/jahid90/just/cmd"
 	"github.com/urfave/cli/v2"
 )
 
@@ -14,7 +14,7 @@ func main() {
 		Usage: "A command runner that runs commands defined in a config file (Justfile by default)",
 	}
 
-	app.Commands = hello.GetCommands()
+	app.Commands = cmd.GetSubCommands()
 
 	err := app.Run(os.Args)
 	if err != nil {
