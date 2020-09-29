@@ -22,7 +22,7 @@ $ cat Justfile
   }
 }
 ```
-The commands can be run using the `do` sub-commands
+The commands can be run using the `do` sub-command
 
 ```
 $ just do build
@@ -39,7 +39,7 @@ $ cat my-config-file
   "build": "mvn package",
   ...
 }
-$ just --config-file my-config-file do build
+$ just --config-file=my-config-file do build
 mvn package
 ...
 BUILD SUCCESSFUL
