@@ -9,6 +9,10 @@ import (
 )
 
 func main() {
+
+	// Disable timestamps in log messages
+	log.SetFlags(log.Flags() &^ (log.Ldate | log.Ltime))
+
 	app := &cli.App{
 		Name:  "just",
 		Usage: "A command runner that runs commands defined in a config file (Justfile by default)",

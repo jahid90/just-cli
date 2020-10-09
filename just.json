@@ -1,0 +1,10 @@
+{
+    "version": "1",
+    "commands": {
+        "build": "yarn build",
+        "build:assets": "docker build -t docker-image:local .",
+        "test": "mvn test",
+        "deploy": "kubectl apply -f k8s/deployment.yaml",
+        "done": "echo done"
+    }
+}
