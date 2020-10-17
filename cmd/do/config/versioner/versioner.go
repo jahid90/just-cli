@@ -1,20 +1,20 @@
-package do
+package versioner
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/jahid90/just/lib"
+)
 
 type versioner struct {
 	Version string `json:"version"`
 }
 
-func parseConfigVersion() (string, error) {
-
-	json, err := readFile(configFileName)
-	if err != nil {
-		return "", err
-	}
+// ParseVersion Parses version from config
+func ParseVersion(config []byte) (string, error) {
 
 	v := versioner{}
-	err = parseJSON(json, &v)
+	err := lib.ParseJSON(config, &v)
 	if err != nil {
 		return "", err
 	}

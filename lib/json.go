@@ -1,11 +1,12 @@
-package do
+package lib
 
 import (
 	"encoding/json"
 	"errors"
 )
 
-func parseJSON(data []byte, container interface{}) error {
+// ParseJSON Parses data as json into container
+func ParseJSON(data []byte, container interface{}) error {
 	err := json.Unmarshal(data, container)
 	if err != nil {
 		return errors.New("Error: bad config file format: " + err.Error())

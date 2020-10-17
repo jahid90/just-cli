@@ -2,71 +2,28 @@ package do
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"os/exec"
-	"strings"
-	"text/tabwriter"
 
 	"github.com/urfave/cli/v2"
 )
 
-func showListing(config *justV1) {
-
-	// handle no commands listed in the config file
-	if len(config.Commands) <= 0 {
-		fmt.Println("No commands found in config file")
-		return
-	}
-
-	// Format the listing in tabular form
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.TabIndent)
-	fmt.Fprintln(w, "Available commands are:")
-	for alias, cmd := range config.Commands {
-		fmt.Fprintln(w, "  "+alias+"\t"+cmd+"\t")
-	}
-	fmt.Fprintln(w)
-
-	// flush the listing to output
-	w.Flush()
-}
-
-func runCommand(cmd string, args ...string) error {
+func runCommand(cmd *exec.Cmd) error {
 
 	var err error
 
-	// execute the command and attach os stdout and stderr to its stdout and stderr streams
-	command := exec.Command(cmd, args...)
-	command.Stdout = os.Stdout
-	command.Stderr = os.Stderr
+	// attach os stdout and stderr to cmd's stdout and stderr streams
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
 
-	err = command.Start()
+	// start the command
+	err = cmd.Start()
 	if err != nil {
 		return err
 	}
 
-	err = command.Wait()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func handleCommand(config *justV1, arg string) error {
-
-	// check if the command is present in the config file
-	entry, ok := config.Commands[arg]
-	if !ok {
-		return errors.New("Error: command `" + arg + "` not found in the config file")
-	}
-
-	// output the command we are running
-	fmt.Println("just @" + entry)
-
-	// execute the command; ignore any additional arguments supplied
-	command := strings.Split(entry, " ")
-	err := runCommand(command[0], command[1:]...)
+	// wait till command's termination
+	err = cmd.Wait()
 	if err != nil {
 		return err
 	}
@@ -88,26 +45,36 @@ func Cmd() *cli.Command {
 		},
 		Action: func(c *cli.Context) error {
 
+			// parse the config
 			config, err := parseConfig()
 			if err != nil {
 				return err
 			}
 
-			arg := c.Args().First()
+			// handle flags
 			if c.Bool("list") {
-				showListing(&config)
-				return nil
-			}
-
-			switch arg {
-			default:
-				err := handleCommand(&config, arg)
+				err := config.GetListing()
 				if err != nil {
 					return err
 				}
 
 				return nil
 			}
+
+			// handle no args
+			if c.Args().Len() == 0 {
+				return errors.New("Error: no argument provided. Run with --help to see available options")
+			}
+
+			// handle actual command
+			cmd, err := config.GetCmd(c)
+			if err != nil {
+				return err
+			}
+
+			runCommand(cmd)
+
+			return nil
 		},
 	}
 }

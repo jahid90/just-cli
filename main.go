@@ -15,7 +15,7 @@ func main() {
 
 	app := &cli.App{
 		Name:  "just",
-		Usage: "A command runner that runs commands defined in a config file (Justfile by default)",
+		Usage: "A command runner that runs commands defined in a config file (just.json by default)",
 	}
 
 	app.Commands = cmd.GetSubCommands()
