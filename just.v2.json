@@ -1,0 +1,16 @@
+{
+    "version": "2",
+    "commands": [
+        {
+            "alias": "test",
+            "action": "mvn test"
+        },
+        {
+            "alias": "build",
+            "action": "yarn build",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        }
+    ]
+}
