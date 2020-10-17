@@ -58,7 +58,7 @@ func handleCommand(config *justV1, arg string) error {
 	// check if the command is present in the config file
 	entry, ok := config.Commands[arg]
 	if !ok {
-		return errors.New("command `" + arg + "` not found in the config file")
+		return errors.New("Error: command `" + arg + "` not found in the config file")
 	}
 
 	// output the command we are running
@@ -79,6 +79,13 @@ func Cmd() *cli.Command {
 	return &cli.Command{
 		Name:  "do",
 		Usage: "Runs a command",
+		Flags: []cli.Flag{
+			&cli.BoolFlag{
+				Name:    "list",
+				Aliases: []string{"l"},
+				Usage:   "list the available commands",
+			},
+		},
 		Action: func(c *cli.Context) error {
 
 			config, err := parseConfig()
@@ -87,12 +94,12 @@ func Cmd() *cli.Command {
 			}
 
 			arg := c.Args().First()
-			switch arg {
-			// TODO: use a flag
-			case "list":
+			if c.Bool("list") {
 				showListing(&config)
-
 				return nil
+			}
+
+			switch arg {
 			default:
 				err := handleCommand(&config, arg)
 				if err != nil {

@@ -21,6 +21,6 @@ func parseConfig() (justV1, error) {
 		}
 		return config, nil
 	default:
-		return justV1{}, errors.New("unknown version: " + version)
+		return justV1{}, errors.New("Error: unknown version: " + version)
 	}
 }

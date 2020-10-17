@@ -1,7 +1,5 @@
 package do
 
-var configFileName = "just.json"
-
 type justV1 struct {
 	Version  string            `json:"version"`
 	Commands map[string]string `json:"commands"`

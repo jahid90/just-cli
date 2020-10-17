@@ -20,7 +20,7 @@ func parseConfigVersion() (string, error) {
 	}
 
 	if v.Version == "" {
-		return "", errors.New("config file is missing version")
+		return "", errors.New("Error: config file is missing version")
 	}
 
 	return v.Version, nil
