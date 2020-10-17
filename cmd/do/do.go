@@ -31,15 +31,26 @@ func showListing(config *justV1) {
 	w.Flush()
 }
 
-func runCommand(cmd string, args ...string) ([]byte, error) {
+func runCommand(cmd string, args ...string) error {
 
-	// execute the command and capture its stdout and stderr streams
-	out, err := exec.Command(cmd, args...).CombinedOutput()
+	var err error
+
+	// execute the command and attach os stdout and stderr to its stdout and stderr streams
+	command := exec.Command(cmd, args...)
+	command.Stdout = os.Stdout
+	command.Stderr = os.Stderr
+
+	err = command.Start()
 	if err != nil {
-		return out, err
+		return err
 	}
 
-	return out, nil
+	err = command.Wait()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func handleCommand(config *justV1, arg string) error {
@@ -55,11 +66,7 @@ func handleCommand(config *justV1, arg string) error {
 
 	// execute the command; ignore any additional arguments supplied
 	command := strings.Split(entry, " ")
-	out, err := runCommand(command[0], command[1:]...)
-
-	// print the output from the command run
-	fmt.Println(string(out))
-
+	err := runCommand(command[0], command[1:]...)
 	if err != nil {
 		return err
 	}
