@@ -16,6 +16,14 @@ func main() {
 	app := &cli.App{
 		Name:  "just",
 		Usage: "A command runner that runs commands defined in a config file (just.json by default)",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "config-file",
+				Aliases: []string{"c"},
+				Usage:   "the config file to use",
+				Value:   "just.json",
+			},
+		},
 	}
 
 	app.Commands = cmd.GetSubCommands()

@@ -1,7 +1,6 @@
 package do
 
 import (
-	"errors"
 	"os"
 	"os/exec"
 
@@ -46,7 +45,7 @@ func Cmd() *cli.Command {
 		Action: func(c *cli.Context) error {
 
 			// parse the config
-			config, err := parseConfig()
+			config, err := parseConfig(c)
 			if err != nil {
 				return err
 			}
@@ -63,7 +62,8 @@ func Cmd() *cli.Command {
 
 			// handle no args
 			if c.Args().Len() == 0 {
-				return errors.New("Error: no argument provided. Run with --help to see available options")
+				cli.ShowSubcommandHelp(c)
+				return nil
 			}
 
 			// handle actual command
