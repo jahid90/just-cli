@@ -94,7 +94,11 @@ func configFromV2(j justfile.JustV2) (Config, error) {
 func getEnv(environment map[string]string) string {
 	var env string
 	for e, v := range environment {
-		env += e + "=" + v
+		if len(env) == 0 {
+			env += e + "=" + v
+		} else {
+			env += "," + e + "=" + v
+		}
 	}
 	if len(env) > 0 {
 		env += " "

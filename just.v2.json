@@ -9,7 +9,8 @@
             "alias": "build",
             "action": "yarn build",
             "env": {
-                "NODE_ENV": "development"
+                "NODE_ENV": "development",
+                "DEBUG": "true"
             }
         }
     ]
