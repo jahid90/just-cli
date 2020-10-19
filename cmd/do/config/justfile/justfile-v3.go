@@ -5,6 +5,8 @@ import (
 	"strings"
 
 	"github.com/jahid90/just/lib"
+	"github.com/jahid90/just/lib/lexer"
+	"github.com/jahid90/just/lib/parser"
 )
 
 // JustV3 A type representing v3 of the config file
@@ -30,17 +32,15 @@ func ParseV3(contents []byte) (JustV3, error) {
 		fmt.Println()
 		fmt.Println("Processing => " + alias + ": " + command)
 		fmt.Println("-------------------------------------------------------------------------------------------")
-		lexer := lib.NewLexer(strings.NewReader(command))
+		lexer := lexer.NewLexer(strings.NewReader(command))
 
-		for {
-			token := lexer.Lex()
+		buffer := lexer.Run()
+		buffer.Print()
 
-			if token.Type == lib.EOF {
-				break
-			}
+		parser := parser.NewParser(buffer)
+		parsed := parser.Parse()
 
-			fmt.Println(token)
-		}
+		parsed.Print(0)
 	}
 
 	return j, nil

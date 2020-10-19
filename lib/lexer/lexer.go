@@ -1,54 +1,12 @@
-package lib
+package lexer
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"unicode"
 )
 
-/* See parser-v3.go for the grammar */
-
-// TokenType Represents the type of a token
-type TokenType int
-
-// TokenTypes
-const (
-	EOF     = iota // EOF end-of-file token
-	UNKNOWN        // UNKNOWN Unrecognised token
-	AND            // AND and token
-	OR             // OR or token
-	ASSIGN         // ASSIGN assignment token
-	COMMA          // COMMA comma token
-	IDENT          // IDENT identifier token
-)
-
-var tokenTypes = []string{
-	EOF:     "EOF",
-	UNKNOWN: "UNKNOWN",
-	AND:     "AND",
-	OR:      "OR",
-	ASSIGN:  "ASSIGN",
-	COMMA:   "COMMA",
-	IDENT:   "IDENT",
-}
-
-func (t TokenType) String() string {
-	return tokenTypes[t]
-}
-
-// Token Represents a token
-// Contains information about the position, type and value of the token
-// Input is a single line of text, so position refers to the column position within the line
-type Token struct {
-	Type     TokenType
-	Position int
-	Value    string
-}
-
-func (t Token) String() string {
-	return "{ position: " + fmt.Sprint(t.Position) + "\t type:" + t.Type.String() + "\t value: " + t.Value + " }"
-}
+/* See lib/parser/grammar.go for the grammar */
 
 // Lexer Represents a lexer
 type Lexer struct {
@@ -56,14 +14,31 @@ type Lexer struct {
 	reader *bufio.Reader
 }
 
+// Run Runs the lexer and returns a TokenBuffer
+func (l *Lexer) Run() *TokenBuffer {
+	var tokens []*Token
+
+	for {
+		token := l.Lex()
+
+		tokens = append(tokens, &token)
+
+		if token.Type == EOF {
+			break
+		}
+	}
+
+	return NewTokenBuffer(tokens)
+}
+
 // Lex Scans the input for the next token.
 // It returns the position and type of the token and the literal value
 func (l *Lexer) Lex() Token {
 	for {
-		r, _, err := l.reader.ReadRune()
+		r, err := l.read()
 		if err != nil {
 			if err == io.EOF {
-				return Token{Type: EOF, Position: l.pos, Value: ""}
+				return Token{Type: EOF, Position: l.pos, Value: "EOF"}
 			}
 
 			panic(err)
@@ -96,6 +71,18 @@ func (l *Lexer) Lex() Token {
 			}
 			return Token{Type: OR, Position: startPos, Value: token}
 
+		case '$':
+			startPos := l.pos
+			l.unread()
+			token, ok := l.lexExprStart()
+			if !ok {
+				return Token{Type: IDENT, Position: startPos, Value: token}
+			}
+			return Token{Type: EXPRS, Position: startPos, Value: token}
+
+		case ')':
+			return Token{Type: EXPRE, Position: l.pos, Value: ")"}
+
 		default:
 			if unicode.IsSpace(r) {
 				continue
@@ -113,13 +100,21 @@ func (l *Lexer) Lex() Token {
 	}
 }
 
-func (l *Lexer) unread() {
+func (l *Lexer) read() (rune, error) {
+	r, _, err := l.reader.ReadRune()
+
+	return r, err
+}
+
+func (l *Lexer) unread() error {
 	err := l.reader.UnreadRune()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	l.pos--
+
+	return nil
 }
 
 func (l *Lexer) lexAnd() (string, bool) {
@@ -131,13 +126,13 @@ func (l *Lexer) lexOr() (string, bool) {
 }
 
 func (l *Lexer) lexConsecutive(r rune) (string, bool) {
-	_, _, err := l.reader.ReadRune()
+	_, err := l.read()
 	if err != nil {
 		panic(err)
 	}
 	l.pos++
 
-	rr, _, err := l.reader.ReadRune()
+	rr, err := l.read()
 	if err != nil {
 		if err == io.EOF {
 			return string(r), false
@@ -153,10 +148,33 @@ func (l *Lexer) lexConsecutive(r rune) (string, bool) {
 	return string(r), false
 }
 
+func (l *Lexer) lexExprStart() (string, bool) {
+	_, err := l.read()
+	if err != nil {
+		panic(err)
+	}
+	l.pos++
+
+	r, err := l.read()
+	if err != nil {
+		if err == io.EOF {
+			return string(r), false
+		}
+	}
+	l.pos++
+
+	if r == '(' {
+		return "$(", true
+	}
+
+	l.unread()
+	return "$", false
+}
+
 func (l *Lexer) lexIdent() (string, bool) {
 	var token string
 	for {
-		r, _, err := l.reader.ReadRune()
+		r, err := l.read()
 		if err != nil {
 			if err == io.EOF {
 				return token, true
@@ -165,13 +183,23 @@ func (l *Lexer) lexIdent() (string, bool) {
 
 		l.pos++
 
-		if !unicode.IsSpace(r) {
-			token = token + string(r)
-		} else {
+		if unicode.IsSpace(r) || l.oneOf(r, []rune{',', '=', '&', '|', '$', '(', ')'}) {
 			l.unread()
 			return token, true
 		}
+
+		token = token + string(r)
 	}
+}
+
+func (l *Lexer) oneOf(rune rune, runes []rune) bool {
+	for _, r := range runes {
+		if r == rune {
+			return true
+		}
+	}
+
+	return false
 }
 
 // NewLexer Creates a new lexer instance
