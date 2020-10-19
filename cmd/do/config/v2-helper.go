@@ -34,7 +34,7 @@ func configFromV2(j justfile.JustV2) (Config, error) {
 
 			// check if the alias is present in the config file
 			var ok = false
-			var entry justfile.Command
+			var entry justfile.CommandV2
 			for _, command := range j.Commands {
 				if command.Alias == alias {
 					ok = true

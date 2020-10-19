@@ -44,6 +44,13 @@ func ParseConfig(contents []byte) (Config, error) {
 		}
 		return config, nil
 
+	case "3":
+		_, err := handleV3(contents)
+		if err != nil {
+			return Config{}, nil
+		}
+		return Config{}, errors.New("Warn: Not yet implemented")
+
 	default:
 		return Config{}, errors.New("Error: unknown version: " + version)
 	}

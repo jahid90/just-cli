@@ -6,12 +6,12 @@ import (
 
 // JustV2 A type representing v2 of just config file
 type JustV2 struct {
-	Version  string    `json:"version"`
-	Commands []Command `json:"commands"`
+	Version  string      `json:"version"`
+	Commands []CommandV2 `json:"commands"`
 }
 
-// Command Represents a command in v2
-type Command struct {
+// CommandV2 Represents a command in v2
+type CommandV2 struct {
 	// The alias of the command that will be used to run it
 	Alias string `json:"alias"`
 
