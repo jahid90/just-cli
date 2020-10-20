@@ -13,19 +13,22 @@ import (
 
 var commandV3GeneratorFn = func(alias string, j *justfile.Just) (*exec.Cmd, error) {
 
-	for a, c := range j.Commands {
-		fmt.Println("just @" + a)
-
-		lexer := lexer.NewLexer(strings.NewReader(c))
-		buffer := lexer.Run()
-
-		buffer.Print()
-
-		parser := parser.NewParser(buffer)
-		parsed := parser.Parse()
-
-		parsed.Print(0)
+	entry, err := j.LookupAlias(alias)
+	if err != nil {
+		return nil, err
 	}
+
+	fmt.Println("just @" + entry)
+
+	lexer := lexer.NewLexer(strings.NewReader(entry))
+	buffer := lexer.Run()
+
+	buffer.Print()
+
+	parser := parser.NewParser(buffer)
+	parsed := parser.Parse()
+
+	parsed.Print(0)
 
 	return nil, errors.New("Warn: Not yet implemented")
 }

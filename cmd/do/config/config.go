@@ -26,7 +26,7 @@ type GeneratorFn func(j *justfile.Just) (*Config, error)
 // Parse Parses the config file and generates a suitable Config
 func Parse(contents []byte) (*Config, error) {
 
-	configfileParserFn := justfile.GetParser()
+	configfileParserFn := justfile.GetParserFn()
 	j, err := configfileParserFn(contents)
 	if err != nil {
 		return nil, err
@@ -71,7 +71,7 @@ func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
 				return err
 			}
 
-			err = command.RunCommand(cmd)
+			err = command.Run(cmd)
 			if err != nil {
 				return err
 			}

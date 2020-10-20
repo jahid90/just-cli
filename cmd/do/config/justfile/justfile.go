@@ -37,12 +37,24 @@ func (j *Just) ShowListing() error {
 	return nil
 }
 
+// LookupAlias Returns the command corrsponding to an alias
+func (j *Just) LookupAlias(alias string) (string, error) {
+
+	// check if the alias is present in the config file
+	entry, ok := j.Commands[alias]
+	if !ok {
+		return "", errors.New("Error: alias `" + alias + "` not found in the config file")
+	}
+
+	return entry, nil
+}
+
 // ParserFn A function representing a parser
 // On being invoked, parses the contents passed to it, generates a Just config file and returns a pointer to it
 type ParserFn func([]byte) (*Just, error)
 
-// GetParser Returns a parser to parse the config file
-func GetParser() ParserFn {
+// GetParserFn Returns a parser function to parse the config file
+func GetParserFn() ParserFn {
 
 	return func(contents []byte) (*Just, error) {
 

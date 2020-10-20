@@ -1,6 +1,7 @@
 package command
 
 import (
+	"errors"
 	"os"
 	"os/exec"
 
@@ -10,8 +11,20 @@ import (
 // GeneratorFn A function to generate an exec.Cmd that can be run
 type GeneratorFn func(string, *justfile.Just) (*exec.Cmd, error)
 
-// RunCommand Runs the command and attaches its stdout and stderr to os's stdout and stderr respectively
-func RunCommand(cmd *exec.Cmd) error {
+// Validate validates the command
+func Validate(command string) error {
+
+	// check that the command exists
+	_, err := exec.LookPath(command)
+	if err != nil {
+		return errors.New("Error: " + command + " - command not found")
+	}
+
+	return nil
+}
+
+// Run Runs the command and attaches its stdout and stderr to os's stdout and stderr respectively
+func Run(cmd *exec.Cmd) error {
 
 	var err error
 
