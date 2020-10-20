@@ -1,6 +1,8 @@
 package config
 
 import (
+	"errors"
+
 	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/jahid90/just/lib/command"
 	"github.com/urfave/cli/v2"
@@ -48,8 +50,7 @@ func Parse(contents []byte) (*Config, error) {
 		break
 
 	default:
-		cmdGeneratorFn = command.DefaultGeneratorFn
-		break
+		return nil, errors.New("Error: unknown version: " + version)
 	}
 
 	config, err := generateConfig(j, cmdGeneratorFn)

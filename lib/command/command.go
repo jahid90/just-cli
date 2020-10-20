@@ -1,7 +1,6 @@
 package command
 
 import (
-	"errors"
 	"os"
 	"os/exec"
 
@@ -10,11 +9,6 @@ import (
 
 // GeneratorFn A function to generate an exec.Cmd that can be run
 type GeneratorFn func(string, *justfile.Just) (*exec.Cmd, error)
-
-// DefaultGeneratorFn A default command generator fn
-func DefaultGeneratorFn(_ string, j *justfile.Just) (*exec.Cmd, error) {
-	return nil, errors.New("Error: unknown version: " + j.Version)
-}
 
 // RunCommand Runs the command and attaches its stdout and stderr to os's stdout and stderr respectively
 func RunCommand(cmd *exec.Cmd) error {
