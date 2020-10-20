@@ -2,6 +2,7 @@ package config
 
 import (
 	"errors"
+	"os"
 
 	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/jahid90/just/lib/command"
@@ -71,7 +72,7 @@ func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
 				return err
 			}
 
-			err = command.Run(cmd)
+			err = command.Run(cmd, os.Stdout, os.Stderr)
 			if err != nil {
 				return err
 			}

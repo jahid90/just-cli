@@ -2,10 +2,10 @@
     "version": "2",
     "commands": {
         "build": "NODE_ENV=production yarn build",
-        "run": "DEBUG=app:*,PORT=9000 yarn start",
-        "docker:build": "docker build -t $(app-name):$(METADATA_FILE_NAME=.app-metadata.json get-version) .",
+        "run": "DEBUG=app:*,PORT=$(echo -n 9000) yarn start",
+        "docker:build": "docker build -t $(echo -n my-image):$(METADATA_FILE_NAME=.app-metadata.json echo -n local) .",
         "docker:run": "docker-compose up -d",
-        "k8s:generate": "VERSION=$(METADATA_FILE_NAME=.app-metadata.json get-version) envsubst < k8s/template/yaml > k8s/deployment.yaml",
+        "k8s:generate": "VERSION=$(METADATA_FILE_NAME=.app-metadata.json echo -n 1.1.2) printenv VERSION",
         "k8s:deploy": "kubectl apply -f k8s/deployment.yaml",
         "k8s:destroy": "kubectl delete -f k8s/deployment.yaml"
     }

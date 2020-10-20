@@ -13,7 +13,8 @@ type TokenBuffer struct {
 	tokens  []*Token
 }
 
-func (t *TokenBuffer) addToken(token *Token) {
+// AddToken Add a token to the stream
+func (t *TokenBuffer) AddToken(token *Token) {
 	t.tokens = append(t.tokens, token)
 	t.length++
 }
@@ -22,7 +23,7 @@ func (t *TokenBuffer) addToken(token *Token) {
 func (t *TokenBuffer) appendEOFToken() {
 	eofToken := &Token{Type: EOF, Position: -1, Value: "EOF"}
 
-	t.addToken(eofToken)
+	t.AddToken(eofToken)
 }
 
 // Start Start of the stream

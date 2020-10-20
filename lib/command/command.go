@@ -24,13 +24,13 @@ func Validate(command string) error {
 }
 
 // Run Runs the command and attaches its stdout and stderr to os's stdout and stderr respectively
-func Run(cmd *exec.Cmd) error {
+func Run(cmd *exec.Cmd, stdout *os.File, stderr *os.File) error {
 
 	var err error
 
 	// attach os stdout and stderr to cmd's stdout and stderr streams
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = stdout
+	cmd.Stderr = stderr
 
 	// start the command
 	err = cmd.Start()

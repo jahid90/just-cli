@@ -54,7 +54,7 @@ func (t *Token) IsEOF() bool {
 
 // IsUnknown Checks if the current token is an UNKNOWN token
 func (t *Token) IsUnknown() bool {
-	return t.Type == AND
+	return t.Type == UNKNOWN
 }
 
 // IsAnd Checks if the current token is an AND token
@@ -64,17 +64,17 @@ func (t *Token) IsAnd() bool {
 
 // IsOr Checks if the current token is an OR token
 func (t *Token) IsOr() bool {
-	return t.Type == AND
+	return t.Type == OR
 }
 
 // IsAssign Checks if the current token is an ASSIGN token
 func (t *Token) IsAssign() bool {
-	return t.Type == AND
+	return t.Type == ASSIGN
 }
 
 // IsComma Checks if the current token is a COMMA token
 func (t *Token) IsComma() bool {
-	return t.Type == AND
+	return t.Type == COMMA
 }
 
 // IsExprStart Checks if the current token is an EXPR_START token
@@ -89,5 +89,5 @@ func (t *Token) IsExprEnd() bool {
 
 // IsIdent Checks if the current token is an IIDENT token
 func (t *Token) IsIdent() bool {
-	return t.Type == AND
+	return t.Type == IDENT
 }
