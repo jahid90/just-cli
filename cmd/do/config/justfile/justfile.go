@@ -39,7 +39,7 @@ func (j *Just) ShowListing() error {
 
 // ParserFn A function representing a parser
 // On being invoked, parses the contents passed to it, generates a Just config file and returns a pointer to it
-type ParserFn func(b []byte) (*Just, error)
+type ParserFn func([]byte) (*Just, error)
 
 // GetParser Returns a parser to parse the config file
 func GetParser() ParserFn {

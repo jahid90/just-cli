@@ -3,7 +3,7 @@
     "commands": {
         "dev": "NODE_ENV=development,DEBUG=app:* yarn start",
         "build": "NODE_ENV=production yarn build",
-        "test": "PROFILE=dev,PORT=9000,SECRET=password,USER=guest ./mvnw test",
+        "test": "PROFILE=dev,PORT=9000,SECRET=password,USER=$USER ./mvnw test",
         "docker:build": "docker build -t docker-image:local .",
         "docker:run": "docker-compose up -d",
         "k8s:generate": "VERSION=$(METADATA_FILE_NAME=.app-metadata.json get-version) envsubst < k8s/template.yaml > k8s/deployment.yaml",

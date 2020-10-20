@@ -15,7 +15,7 @@ func parseConfig(ctx *cli.Context) (*config.Config, error) {
 		return nil, err
 	}
 
-	c, err := config.ParseConfig(contents)
+	c, err := config.Parse(contents)
 	if err != nil {
 		return nil, err
 	}

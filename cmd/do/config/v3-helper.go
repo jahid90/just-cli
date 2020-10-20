@@ -1,38 +1,31 @@
 package config
 
 import (
+	"errors"
 	"fmt"
+	"os/exec"
 	"strings"
 
+	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/jahid90/just/lib/lexer"
 	"github.com/jahid90/just/lib/parser"
-
-	"github.com/jahid90/just/cmd/do/config/justfile"
-	"github.com/urfave/cli/v2"
 )
 
-func configFromV3(j *justfile.Just) (*Config, error) {
-	c := &Config{
-		RunCmd: func(c *cli.Context) error {
+var commandV3GeneratorFn = func(alias string, j *justfile.Just) (*exec.Cmd, error) {
 
-			for alias, command := range j.Commands {
-				fmt.Println("just @" + alias)
+	for a, c := range j.Commands {
+		fmt.Println("just @" + a)
 
-				lexer := lexer.NewLexer(strings.NewReader(command))
-				buffer := lexer.Run()
+		lexer := lexer.NewLexer(strings.NewReader(c))
+		buffer := lexer.Run()
 
-				buffer.Print()
+		buffer.Print()
 
-				parser := parser.NewParser(buffer)
-				parsed := parser.Parse()
+		parser := parser.NewParser(buffer)
+		parsed := parser.Parse()
 
-				parsed.Print(0)
-			}
-
-			return nil
-		},
-		GetListing: j.ShowListing,
+		parsed.Print(0)
 	}
 
-	return c, nil
+	return nil, errors.New("Warn: Not yet implemented")
 }
