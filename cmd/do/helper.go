@@ -6,18 +6,18 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func parseConfig(ctx *cli.Context) (config.Config, error) {
+func parseConfig(ctx *cli.Context) (*config.Config, error) {
 
 	var configFileName = ctx.String("config-file")
 
 	contents, err := lib.ReadFile(configFileName)
 	if err != nil {
-		return config.Config{}, err
+		return nil, err
 	}
 
 	c, err := config.ParseConfig(contents)
 	if err != nil {
-		return config.Config{}, err
+		return nil, err
 	}
 
 	return c, nil

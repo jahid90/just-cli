@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 
+	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/jahid90/just/cmd/do/config/versioner"
 	"github.com/urfave/cli/v2"
 )
@@ -19,38 +20,56 @@ type Config struct {
 	GetListing GetListingFunc
 }
 
+// Fn Function to generate the config
+type Fn func(j *justfile.Just) (*Config, error)
+
 // ParseConfig Parses the config file and generates a suitable Config
-func ParseConfig(contents []byte) (Config, error) {
+func ParseConfig(contents []byte) (*Config, error) {
 
 	version, err := versioner.ParseVersion(contents)
 	if err != nil {
-		return Config{}, err
+		return nil, err
 	}
 
+	var configFn Fn
 	// we only allow the versions we know
 	switch version {
 	case "1":
-		config, err := handleV1(contents)
-		if err != nil {
-			return Config{}, err
-		}
-		return config, nil
+		configFn = configFromV1
+		break
 
 	case "2":
-		config, err := handleV2(contents)
-		if err != nil {
-			return Config{}, err
-		}
-		return config, nil
+		configFn = configFromV2
+		break
 
 	case "3":
-		_, err := handleV3(contents)
-		if err != nil {
-			return Config{}, nil
-		}
-		return Config{}, errors.New("Warn: Not yet implemented")
+		configFn = configFromV3
+		break
 
 	default:
-		return Config{}, errors.New("Error: unknown version: " + version)
+		configFn = defaultFn
+		break
 	}
+
+	return handle(contents, configFn)
+}
+
+func handle(contents []byte, configFn Fn) (*Config, error) {
+
+	parserFn := justfile.GetParser()
+	j, err := parserFn(contents)
+	if err != nil {
+		return nil, err
+	}
+
+	c, err := configFn(j)
+	if err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
+
+func defaultFn(j *justfile.Just) (*Config, error) {
+	return nil, errors.New("Warn: Not yet implemented")
 }

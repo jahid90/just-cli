@@ -2,30 +2,37 @@ package config
 
 import (
 	"fmt"
+	"strings"
+
+	"github.com/jahid90/just/lib/lexer"
+	"github.com/jahid90/just/lib/parser"
 
 	"github.com/jahid90/just/cmd/do/config/justfile"
+	"github.com/urfave/cli/v2"
 )
 
-func handleV3(contents []byte) (Config, error) {
-	j, err := justfile.ParseV3(contents)
-	if err != nil {
-		return Config{}, nil
+func configFromV3(j *justfile.Just) (*Config, error) {
+	c := &Config{
+		RunCmd: func(c *cli.Context) error {
+
+			for alias, command := range j.Commands {
+				fmt.Println("just @" + alias)
+
+				lexer := lexer.NewLexer(strings.NewReader(command))
+				buffer := lexer.Run()
+
+				buffer.Print()
+
+				parser := parser.NewParser(buffer)
+				parsed := parser.Parse()
+
+				parsed.Print(0)
+			}
+
+			return nil
+		},
+		GetListing: j.ShowListing,
 	}
 
-	fmt.Println("==========================")
-	fmt.Println(j.Version)
-	for k, v := range j.Commands {
-		fmt.Println(k + ":" + v)
-	}
-
-	/*
-		c, err := configFromV2(j)
-		if err != nil {
-			return Config{}, nil
-		}
-
-		return c, nil
-	*/
-
-	return Config{}, nil
+	return c, nil
 }
