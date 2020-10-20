@@ -1,34 +1,8 @@
 package do
 
 import (
-	"os"
-	"os/exec"
-
 	"github.com/urfave/cli/v2"
 )
-
-func runCommand(cmd *exec.Cmd) error {
-
-	var err error
-
-	// attach os stdout and stderr to cmd's stdout and stderr streams
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	// start the command
-	err = cmd.Start()
-	if err != nil {
-		return err
-	}
-
-	// wait till command's termination
-	err = cmd.Wait()
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
 
 // Cmd A sub-command that prints a greeting
 func Cmd() *cli.Command {
@@ -66,13 +40,11 @@ func Cmd() *cli.Command {
 				return nil
 			}
 
-			// handle actual command
-			cmd, err := config.GetCmd(c)
+			// run the command
+			err = config.RunCmd(c)
 			if err != nil {
 				return err
 			}
-
-			runCommand(cmd)
 
 			return nil
 		},

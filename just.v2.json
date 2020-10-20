@@ -1,17 +1,12 @@
 {
     "version": "2",
-    "commands": [
-        {
-            "alias": "test",
-            "action": "mvn test"
-        },
-        {
-            "alias": "build",
-            "action": "yarn build",
-            "env": {
-                "NODE_ENV": "development",
-                "DEBUG": "true"
-            }
-        }
-    ]
+    "commands": {
+        "build": "NODE_ENV=production yarn build",
+        "run": "DEBUG=app:*,PORT=9000 yarn start",
+        "docker:build": "docker build -t $(app-name):$(METADATA_FILE_NAME=.app-metadata.json get-version) .",
+        "docker:run": "docker-compose up -d",
+        "k8s:generate": "VERSION=$(METADATA_FILE_NAME=.app-metadata.json get-version) envsubst < k8s/template/yaml > k8s/deployment.yaml",
+        "k8s:deploy": "kubectl apply -f k8s/deployment.yaml",
+        "k8s:destroy": "kubectl delete -f k8s/deployment.yaml"
+    }
 }

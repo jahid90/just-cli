@@ -4,22 +4,10 @@ import (
 	"github.com/jahid90/just/lib"
 )
 
-// JustV2 A type representing v2 of just config file
+// JustV2 A type representing v2 of just config file; same as JustV1
 type JustV2 struct {
-	Version  string      `json:"version"`
-	Commands []CommandV2 `json:"commands"`
-}
-
-// CommandV2 Represents a command in v2
-type CommandV2 struct {
-	// The alias of the command that will be used to run it
-	Alias string `json:"alias"`
-
-	// The action to run when the alias is passed
-	Action string `json:"action"`
-
-	// Any env variables to pass onto the action
-	Env map[string]string `json:"env"`
+	Version  string            `json:"version"`
+	Commands map[string]string `json:"commands"`
 }
 
 // ParseV2 parses JustV2

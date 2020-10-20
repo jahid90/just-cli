@@ -8,6 +8,8 @@ import (
 	"strings"
 	"text/tabwriter"
 
+	"github.com/jahid90/just/lib"
+
 	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/urfave/cli/v2"
 )
@@ -28,33 +30,18 @@ func handleV1(contents []byte) (Config, error) {
 
 func configFromV1(j justfile.JustV1) (Config, error) {
 	c := Config{
-		GetCmd: func(c *cli.Context) (*exec.Cmd, error) {
-
-			alias := c.Args().First()
-
-			// check if the alias is present in the config file
-			entry, ok := j.Commands[alias]
-			if !ok {
-				return nil, errors.New("Error: alias `" + alias + "` not found in the config file")
-			}
-
-			commandLine := strings.Split(entry, " ")
-			command := commandLine[0]
-			args := commandLine[1:]
-
-			// check that the command exists
-			_, err := exec.LookPath(command)
+		RunCmd: func(c *cli.Context) error {
+			cmd, err := getCmdV1(c, j)
 			if err != nil {
-				return nil, errors.New("Error: " + command + " - command not found")
+				return err
 			}
 
-			// output the command we are running
-			fmt.Println("just @" + entry)
+			err = lib.RunCommand(cmd)
+			if err != nil {
+				return err
+			}
 
-			// generate the command; ignore any additional arguments supplied
-			cmd := exec.Command(command, args...)
-
-			return cmd, nil
+			return nil
 		},
 		GetListing: func() error {
 
@@ -79,4 +66,33 @@ func configFromV1(j justfile.JustV1) (Config, error) {
 	}
 
 	return c, nil
+}
+
+func getCmdV1(c *cli.Context, j justfile.JustV1) (*exec.Cmd, error) {
+
+	alias := c.Args().First()
+
+	// check if the alias is present in the config file
+	entry, ok := j.Commands[alias]
+	if !ok {
+		return nil, errors.New("Error: alias `" + alias + "` not found in the config file")
+	}
+
+	commandLine := strings.Split(entry, " ")
+	command := commandLine[0]
+	args := commandLine[1:]
+
+	// check that the command exists
+	_, err := exec.LookPath(command)
+	if err != nil {
+		return nil, errors.New("Error: " + command + " - command not found")
+	}
+
+	// output the command we are running
+	fmt.Println("just @" + entry)
+
+	// generate the command; ignore any additional arguments supplied
+	cmd := exec.Command(command, args...)
+
+	return cmd, nil
 }

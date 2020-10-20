@@ -8,6 +8,8 @@ import (
 	"strings"
 	"text/tabwriter"
 
+	"github.com/jahid90/just/lib"
+
 	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/urfave/cli/v2"
 )
@@ -28,42 +30,15 @@ func handleV2(contents []byte) (Config, error) {
 
 func configFromV2(j justfile.JustV2) (Config, error) {
 	c := Config{
-		GetCmd: func(c *cli.Context) (*exec.Cmd, error) {
+		RunCmd: func(c *cli.Context) error {
+			cmd, err := getCmdV2(c, j)
 
-			alias := c.Args().First()
-
-			// check if the alias is present in the config file
-			var ok = false
-			var entry justfile.CommandV2
-			for _, command := range j.Commands {
-				if command.Alias == alias {
-					ok = true
-					entry = command
-					break
-				}
-			}
-			if !ok {
-				return nil, errors.New("Error: alias `" + alias + "` not found in the config file")
-			}
-
-			commandLine := strings.Split(entry.Action, " ")
-			command := commandLine[0]
-			args := commandLine[1:]
-
-			// check that the command exists
-			_, err := exec.LookPath(command)
+			err = lib.RunCommand(cmd)
 			if err != nil {
-				return nil, errors.New("Error: " + command + " - command not found")
+				return err
 			}
 
-			// output the command we are running
-			fmt.Println("just @" + getEnv(entry.Env) + entry.Action)
-
-			// generate the command; ignore any additional arguments supplied
-			cmd := exec.Command(command, args...)
-			cmd.Env = append(os.Environ(), getEnv(entry.Env))
-
-			return cmd, nil
+			return nil
 		},
 		GetListing: func() error {
 
@@ -75,9 +50,8 @@ func configFromV2(j justfile.JustV2) (Config, error) {
 			// format the listing in tabular form
 			w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.TabIndent)
 			fmt.Fprintln(w, "Available commands are:")
-			for _, command := range j.Commands {
-				env := getEnv(command.Env)
-				fmt.Fprintln(w, "  "+command.Alias+"\t"+env+command.Action+"\t")
+			for alias, command := range j.Commands {
+				fmt.Fprintln(w, "  "+alias+"\t"+command+"\t")
 			}
 			fmt.Fprintln(w)
 
@@ -91,18 +65,31 @@ func configFromV2(j justfile.JustV2) (Config, error) {
 	return c, nil
 }
 
-func getEnv(environment map[string]string) string {
-	var env string
-	for e, v := range environment {
-		if len(env) == 0 {
-			env += e + "=" + v
-		} else {
-			env += "," + e + "=" + v
-		}
-	}
-	if len(env) > 0 {
-		env += " "
+func getCmdV2(c *cli.Context, j justfile.JustV2) (*exec.Cmd, error) {
+
+	alias := c.Args().First()
+
+	// check if the alias is present in the config file
+	entry, ok := j.Commands[alias]
+	if !ok {
+		return nil, errors.New("Error: alias `" + alias + "` not found in the config file")
 	}
 
-	return env
+	commandLine := strings.Split(entry, " ")
+	command := commandLine[0]
+	args := commandLine[1:]
+
+	// check that the command exists
+	_, err := exec.LookPath(command)
+	if err != nil {
+		return nil, errors.New("Error: " + command + " - command not found")
+	}
+
+	// output the command we are running
+	fmt.Println("just @" + entry)
+
+	// generate the command; ignore any additional arguments supplied
+	cmd := exec.Command(command, args...)
+
+	return cmd, nil
 }

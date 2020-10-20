@@ -2,21 +2,20 @@ package config
 
 import (
 	"errors"
-	"os/exec"
 
 	"github.com/jahid90/just/cmd/do/config/versioner"
 	"github.com/urfave/cli/v2"
 )
 
-// GetCmdFunc Function to generate an exec.Cmd that can then be executed
-type GetCmdFunc func(c *cli.Context) (*exec.Cmd, error)
+// RunCmdFunc Function to run the command corresponding to the alias received in the args
+type RunCmdFunc func(c *cli.Context) error
 
 // GetListingFunc Function to generate listing of available commands
 type GetListingFunc func() error
 
 // Config Parsed config that can be used to generate and run commands
 type Config struct {
-	GetCmd     GetCmdFunc
+	RunCmd     RunCmdFunc
 	GetListing GetListingFunc
 }
 
