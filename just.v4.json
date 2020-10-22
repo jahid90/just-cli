@@ -1,1 +1,15 @@
-{"version":"4"}
+{
+    "version": "4",
+    "commands": {
+        "dev": "NODE_ENV=development,DEBUG=app:* yarn start",
+        "build": "NODE_ENV=production yarn build",
+        "test": "PROFILE=dev,PORT=9000,SECRET=password,USER=$USER ./mvnw test",
+        "docker:build": "docker build -t docker-image:local .",
+        "docker:run": "docker-compose up -d",
+        "k8s:generate": "VERSION=$(METADATA_FILE_NAME=.app-metadata.json get-version) envsubst < k8s/template.yaml > k8s/deployment.yaml",
+        "k8s:deploy": "kubectl apply -f k8s/deployment.yaml",
+        "done": "echo done",
+        "ls": "ls -lh",
+        "k8s:redeploy": "docker build -t $(app-name):$(get-version) . && kubectl apply -f k8s/deployment.yaml"
+    }
+}

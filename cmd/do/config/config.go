@@ -2,7 +2,6 @@ package config
 
 import (
 	"errors"
-	"os"
 
 	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/jahid90/just/lib/command"
@@ -50,6 +49,10 @@ func Parse(contents []byte) (*Config, error) {
 		cmdGeneratorFn = commandV3GeneratorFn
 		break
 
+	case "4":
+		cmdGeneratorFn = commandV4GeneratorFn
+		break
+
 	default:
 		return nil, errors.New("Error: unknown version: " + version)
 	}
@@ -72,7 +75,7 @@ func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
 				return err
 			}
 
-			err = command.Run(cmd, os.Stdout, os.Stderr)
+			err = command.Run(cmd)
 			if err != nil {
 				return err
 			}
