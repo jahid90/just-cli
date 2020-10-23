@@ -1,6 +1,7 @@
 {
     "version": "2",
     "commands": {
+        "tag": "echo $(echo -n my-app):$(echo -n my-label)",
         "build": "NODE_ENV=production yarn build",
         "run": "DEBUG=app:*,PORT=$(echo -n 9000) yarn start",
         "docker:build": "docker build -t $(echo -n my-image):$(METADATA_FILE_NAME=.app-metadata.json echo -n local) .",
