@@ -18,6 +18,13 @@ func Cmd() *cli.Command {
 		},
 		Action: func(c *cli.Context) error {
 
+			// no args and no flags set; this means just the base command was run; show help and exit
+			if c.Args().Len() == 0 && c.NumFlags() == 0 {
+				cli.ShowAppHelp(c)
+
+				return nil
+			}
+
 			// parse the config
 			config, err := parseConfig(c)
 			if err != nil {
