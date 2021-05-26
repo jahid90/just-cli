@@ -28,7 +28,8 @@ func Run(cmd *exec.Cmd) error {
 
 	var err error
 
-	// attach os stdout and stderr to cmd's stdout and stderr streams
+	// attach os stdin, stdout and stderr to cmd's stdin, stdout and stderr streams
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
