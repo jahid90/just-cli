@@ -17,6 +17,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "just"
 	app.Usage = "A command runner that runs commands defined in a config file (just.json by default)"
+	app.Version = "1.0.0"
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
 			Name:    "config-file",
