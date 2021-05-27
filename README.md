@@ -1,13 +1,12 @@
 ![Go](https://github.com/jahid90/just-cli/workflows/Go/badge.svg)
 
-# just CLI - A command runner
+# JustCLI - A command runner
 
 ## Description
 
 `just` is a command line tool to execute arbitrary commands.
 
-`just` uses a project specific config file to discover available commands and allows executing them via their defined aliases.
-`just` will look for a config file named `just.json` by default.
+`just` uses a project specific config file to discover available commands and allows executing them via their defined aliases. `just` will look for a config file named `just.json` by default.
 
 A `v1` config file example is shown below:
 
@@ -52,14 +51,21 @@ A `v4` config file example is presented below
 
 ```
 
-
-### The `do` sub-command
+## The `do` sub-command
 The `do` sub-command can be used to run the commands listed in a config file
 
-#### List available commands:
+(**Note**: As of version `1.0.0`, the `do` sub-command is no longer needed to be specified explicitly. Any arguments to `just` is forwarded to the `do` sub-command if it does not match any other sub-commands. So for e.g., `just do build` can be replaced with `just build`)
+
+### Show help
+```shell
+$ just --help # or just help
+$ just do --help
+```
+
+### List available commands:
 
 ```shell
-$ just do --list
+$ just --list # or just do --list
 Available commands are:
   build         npm run build
   docker:build  docker build -t image:tag
@@ -67,16 +73,16 @@ Available commands are:
   clean         rm -rf ./dist/
 ```
 
-#### To run a command, pass the alias to `just do`
+### To run a command, pass the alias to `just do`
 
 ```shell
-$ just do build
+$ just build # or just do build
 npm run build
 ...
 BUILD SUCCESSFUL
 ```
 
-#### A custom file can be passed with the `--config-file` flag.
+### A custom config file can be passed with the `--config-file` flag.
 
 ```shell
 $ cat my-config-file
