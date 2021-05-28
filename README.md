@@ -59,7 +59,31 @@ The `do` sub-command can be used to run the commands listed in a config file
 ### Show help
 ```shell
 $ just --help # or just help
+NAME:
+   just - A command runner
+
+USAGE:
+   just [global options] command [command options] [arguments...]
+
+...
+
+GLOBAL OPTIONS:
+   --config-file value, -c value  the config file to use (default: "just.json")
+   --list, -l                     list the available commands (default: false)
+   --help, -h                     show help (default: false)
+   --version, -v                  print the version (default: false)
+
 $ just do --help
+NAME:
+   just do - Runs a command
+
+USAGE:
+   just do [command options] [arguments...]
+
+OPTIONS:
+   --list, -l  list the available commands (default: false)
+   --help, -h  show help (default: false)
+
 ```
 
 ### List available commands:
