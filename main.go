@@ -17,7 +17,14 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "just"
 	app.Usage = "A command runner"
-	app.Description = "Runs commands defined in a config file. Looks for a config file named just.json in the current directory. A different config file can be provided using the --config-file switch. \n\nSupports versions [1-4] for the config file. \n\tVer. 1 allows simple commands with no env vars or sub-command expansions. \n\tVer. 2 uses a stack based parsing login to identify and run sub-commands before running the main command. \n\tVer. 3 uses a lexer and a parser based on a grammar to parse the command and execute it. \n\tVer. 4 uses the underlying system's os shell to run the commands and supports both env vars and sub-command expansions. \nNote: Ver. 2 and Ver. 3 are not stable yet. \n\nUsage examples: \nTo list the available commands, run `just --list` \nTo execute a command, run `just <alias`"
+	app.Description = "Runs commands defined by aliases in a config file.\n" +
+		"Looks for a config file named just.json in the current directory.\n" +
+		"A different config file can be provided using the `--config-file` switch\n" +
+		"\n" +
+		"Usage examples:\n" +
+		"\tTo list the available commands, run `just --list`\n" +
+		"\tTo execute a command, run `just <alias>`"
+
 	app.Version = "1.0.0"
 	app.Flags = []cli.Flag{
 		&cli.StringFlag{
