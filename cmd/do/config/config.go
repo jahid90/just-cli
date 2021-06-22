@@ -39,19 +39,15 @@ func Parse(contents []byte) (*Config, error) {
 	switch version {
 	case "1":
 		cmdGeneratorFn = commandV1GeneratorFn
-		break
 
 	case "2":
 		cmdGeneratorFn = commandV2GeneratorFn
-		break
 
 	case "3":
 		cmdGeneratorFn = commandV3GeneratorFn
-		break
 
 	case "4":
 		cmdGeneratorFn = commandV4GeneratorFn
-		break
 
 	default:
 		return nil, errors.New("Error: unknown version: " + version)
@@ -66,10 +62,10 @@ func Parse(contents []byte) (*Config, error) {
 }
 
 func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
-	c := &Config{
-		RunCmd: func(c *cli.Context) error {
+	config := &Config{
+		RunCmd: func(ctx *cli.Context) error {
 
-			alias := c.Args().First()
+			alias := ctx.Args().First()
 			cmd, err := fn(alias, j)
 			if err != nil {
 				return err
@@ -85,5 +81,5 @@ func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
 		GetListing: j.ShowListing,
 	}
 
-	return c, nil
+	return config, nil
 }
