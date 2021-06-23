@@ -50,7 +50,7 @@ func Parse(contents []byte) (*Config, error) {
 		cmdGeneratorFn = commandV4GeneratorFn
 
 	default:
-		return nil, errors.New("Error: unknown version: " + version)
+		return nil, errors.New("error: unknown version: " + version)
 	}
 
 	config, err := generateConfig(j, cmdGeneratorFn)

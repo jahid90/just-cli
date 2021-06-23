@@ -47,7 +47,7 @@ func (j *Just) LookupAlias(alias string) (string, error) {
 	// check if the alias is present in the config file
 	entry, ok := j.Commands[alias]
 	if !ok {
-		return "", errors.New("Error: alias `" + alias + "` not found in the config file")
+		return "", errors.New("error: alias `" + alias + "` not found in the config file")
 	}
 
 	return entry, nil

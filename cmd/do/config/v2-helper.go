@@ -86,7 +86,7 @@ func parseCommandLine(input string) (string, error) {
 				return "", err
 			}
 			if i != '(' {
-				return "", errors.New("Error: could not find start of expression: (")
+				return "", errors.New("error: could not find start of expression: (")
 			}
 
 			i, err = s.Pop()
@@ -94,7 +94,7 @@ func parseCommandLine(input string) (string, error) {
 				return "", err
 			}
 			if i != '$' {
-				return "", errors.New("Error: could not find start of expression: $")
+				return "", errors.New("error: could not find start of expression: $")
 			}
 
 			cmdOutput, err := exec.Command("sh", "-c", expr).Output()
@@ -123,5 +123,5 @@ func parseCommandLine(input string) (string, error) {
 }
 
 func split(commandline string) (string, []string, []string, error) {
-	return "", nil, nil, errors.New("Not yet implemented")
+	return "", nil, nil, errors.New("warn: not yet implemented")
 }

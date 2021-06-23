@@ -26,7 +26,7 @@ func (s *RuneStack) Size() int {
 func (s *RuneStack) Top() (rune, error) {
 
 	if s.current <= 0 {
-		return -1, errors.New("Stack is empty")
+		return -1, errors.New("error: stack is empty")
 	}
 
 	return s.elements[s.current-1], nil

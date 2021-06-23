@@ -35,5 +35,5 @@ var commandV3GeneratorFn = func(alias string, appendArgs []string, j *justfile.J
 
 	parsed.Print(0)
 
-	return nil, errors.New("Warn: Not yet implemented")
+	return nil, errors.New("warn: not yet implemented")
 }

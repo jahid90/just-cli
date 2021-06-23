@@ -17,7 +17,7 @@ func Validate(command string) error {
 	// check that the command exists
 	_, err := exec.LookPath(command)
 	if err != nil {
-		return errors.New("Error: " + command + " - command not found")
+		return errors.New("error: " + command + " - command not found")
 	}
 
 	return nil
