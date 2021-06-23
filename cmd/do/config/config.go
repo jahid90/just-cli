@@ -66,7 +66,7 @@ func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
 		RunCmd: func(ctx *cli.Context) error {
 
 			alias := ctx.Args().First()
-			cmd, err := fn(alias, j)
+			cmd, err := fn(alias, ctx.Args().Tail(), j)
 			if err != nil {
 				return err
 			}

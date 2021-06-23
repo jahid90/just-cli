@@ -12,11 +12,16 @@ import (
 	"github.com/jahid90/just/cmd/do/config/justfile"
 )
 
-var commandV2GeneratorFn = func(alias string, j *justfile.Just) (*exec.Cmd, error) {
+var commandV2GeneratorFn = func(alias string, appendArgs []string, j *justfile.Just) (*exec.Cmd, error) {
 
 	entry, err := j.LookupAlias(alias)
 	if err != nil {
 		return nil, err
+	}
+
+	// add any additional arguments provided
+	if len(appendArgs) > 0 {
+		entry = entry + " " + strings.Join(appendArgs, " ")
 	}
 
 	// output the command we are running
