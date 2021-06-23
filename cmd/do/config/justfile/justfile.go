@@ -20,14 +20,18 @@ func (j *Just) ShowListing() error {
 
 	// handle no commands listed in the config file
 	if len(j.Commands) == 0 {
-		return errors.New("Error: no commands found in config file")
+		return errors.New("error: no commands found in config file")
 	}
 
 	// format the listing in tabular form
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.TabIndent)
+	fmt.Fprintln(w)
 	fmt.Fprintln(w, "Available commands are:")
+	fmt.Fprintln(w)
+	fmt.Fprintln(w, "  ALIAS\t\tCOMMAND")
+	fmt.Fprintln(w, "  -----\t\t-------")
 	for alias, cmd := range j.Commands {
-		fmt.Fprintln(w, "  "+alias+"\t"+cmd+"\t")
+		fmt.Fprintln(w, "  "+alias+"\t\t"+cmd+"\t")
 	}
 	fmt.Fprintln(w)
 
