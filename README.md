@@ -90,7 +90,11 @@ OPTIONS:
 
 ```shell
 $ just --list # or just do --list
+
 Available commands are:
+
+  ALIAS         COMMAND
+  -----         -------
   build         npm run build
   docker:build  docker build -t image:tag
   docker:start  docker-compose up -d
