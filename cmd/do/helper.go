@@ -8,9 +8,7 @@ import (
 
 func parseConfig(ctx *cli.Context) (*config.Config, error) {
 
-	var configFileName = ctx.String("config-file")
-
-	contents, err := lib.ReadFile(configFileName)
+	contents, err := readConfigFile(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -21,4 +19,36 @@ func parseConfig(ctx *cli.Context) (*config.Config, error) {
 	}
 
 	return c, nil
+
+}
+
+func readConfigFile(ctx *cli.Context) ([]byte, error) {
+
+	var configFileName = ctx.String("config-file")
+
+	if len(configFileName) != 0 {
+
+		contents, err := lib.ReadFile(configFileName)
+		if err != nil {
+			return nil, err
+		}
+
+		return contents, nil
+
+	} else {
+
+		contents, err := lib.ReadFile("just.json")
+		if err != nil {
+
+			contents, err := lib.ReadFile("just.yaml")
+			if err != nil {
+				return nil, err
+			}
+
+			return contents, nil
+		}
+
+		return contents, nil
+
+	}
 }

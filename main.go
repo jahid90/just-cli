@@ -18,7 +18,7 @@ func main() {
 	app.Name = "just"
 	app.Usage = "A command runner"
 	app.Description = "Runs commands defined by aliases in a config file.\n" +
-		"Looks for a config file named just.json in the current directory.\n" +
+		"Looks for a config file named just.json/just.yaml in the current directory.\n" +
 		"A different config file can be provided using the `--config-file` switch\n" +
 		"\n" +
 		"Usage examples:\n" +
@@ -31,7 +31,6 @@ func main() {
 			Name:    "config-file",
 			Aliases: []string{"c"},
 			Usage:   "the config file to use",
-			Value:   "just.json",
 		},
 	}
 	app.Commands = cmd.GetSubCommands()

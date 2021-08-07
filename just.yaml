@@ -1,0 +1,9 @@
+version: 4
+commands:
+  build: go build
+  install: go install
+  test:v1: just --config-file test-data/just.v1.json --list
+  test:v2: just --config-file test-data/just.v2.json --list
+  test:v3: just --config-file test-data/just.v3.json --list
+  test:v4: just --config-file test-data/just.v4.json --list
+  test:v5: just --config-file test-data/just.v5.json --list

@@ -11,8 +11,8 @@ import (
 
 // Just A type representing a just config file
 type Just struct {
-	Version  string            `json:"version"`
-	Commands map[string]string `json:"commands"`
+	Version  string            `json:"version" yaml:"version"`
+	Commands map[string]string `json:"commands" yaml:"commands"`
 }
 
 // ShowListing Prints a table of the available commands
@@ -65,7 +65,10 @@ func GetParserFn() ParserFn {
 		j := &Just{}
 		err := lib.ParseJSON(contents, j)
 		if err != nil {
-			return nil, err
+			err := lib.ParseYaml(contents, j)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		return j, nil
