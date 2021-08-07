@@ -7,3 +7,5 @@ commands:
   test:v3: just --config-file test-data/just.v3.json --list
   test:v4: just --config-file test-data/just.v4.json --list
   test:v5: just --config-file test-data/just.v5.json --list
+  longline: composer compose --in test-data/template.yaml --values test-data/values.yaml --out test-data/generated.yaml --set variable1=value1 --set variable2=value2
+
