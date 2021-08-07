@@ -32,6 +32,11 @@ func main() {
 			Aliases: []string{"c"},
 			Usage:   "the config file to use",
 		},
+		&cli.StringFlag{
+			Name:    "output",
+			Aliases: []string{"o"},
+			Usage:   "Print config as json/yaml",
+		},
 	}
 	app.Commands = cmd.GetSubCommands()
 

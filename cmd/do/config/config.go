@@ -1,17 +1,20 @@
 package config
 
 import (
+	"encoding/json"
 	"errors"
 
 	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/jahid90/just/lib/command"
 	"github.com/urfave/cli/v2"
+	"gopkg.in/yaml.v2"
 )
 
 // Config Parsed config that can be used to generate and run commands
 type Config struct {
 	RunCmd     RunCmdFunc
 	GetListing GetListingFunc
+	Format     FormatFunc
 }
 
 // RunCmdFunc Function to run the command corresponding to the alias received in the args
@@ -19,6 +22,9 @@ type RunCmdFunc func(c *cli.Context) error
 
 // GetListingFunc Function to generate listing of available commands
 type GetListingFunc func() error
+
+// FormatFunc Function to format the config in known formats
+type FormatFunc func(format string) ([]byte, error)
 
 // GeneratorFn Function to generate the config
 type GeneratorFn func(j *justfile.Just) (*Config, error)
@@ -79,6 +85,28 @@ func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
 			return nil
 		},
 		GetListing: j.ShowListing,
+		Format: func(format string) ([]byte, error) {
+
+			if format == "json" {
+				formatted, err := json.MarshalIndent(j, "", "  ")
+				if err != nil {
+					return nil, err
+				}
+
+				return formatted, nil
+			}
+
+			if format == "yaml" {
+				formatted, err := yaml.Marshal(j)
+				if err != nil {
+					return nil, err
+				}
+
+				return formatted, nil
+			}
+
+			return nil, errors.New("error: output must be one of ['json', 'yaml']")
+		},
 	}
 
 	return config, nil

@@ -1,6 +1,8 @@
 package do
 
 import (
+	"fmt"
+
 	"github.com/urfave/cli/v2"
 )
 
@@ -37,6 +39,19 @@ func Cmd() *cli.Command {
 				if err != nil {
 					return err
 				}
+
+				return nil
+			}
+
+			// handle output flag
+			if len(c.String("output")) != 0 {
+
+				formatted, err := config.Format(c.String("output"))
+				if err != nil {
+					return err
+				}
+
+				fmt.Println(string(formatted))
 
 				return nil
 			}
