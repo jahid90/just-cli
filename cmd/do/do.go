@@ -3,6 +3,7 @@ package do
 import (
 	"fmt"
 
+	"github.com/jahid90/just/cmd/do/config"
 	"github.com/urfave/cli/v2"
 )
 
@@ -34,32 +35,9 @@ func Cmd() *cli.Command {
 			}
 
 			// handle flags
-			if c.Bool("list") {
-				err := config.GetListing()
-				if err != nil {
-					return err
-				}
-
-				return nil
-			}
-
-			// handle output flag
-			if len(c.String("output")) != 0 {
-
-				formatted, err := config.Format(c.String("output"))
-				if err != nil {
-					return err
-				}
-
-				fmt.Println(string(formatted))
-
-				return nil
-			}
-
-			// handle no args
-			if c.Args().Len() == 0 {
-				cli.ShowSubcommandHelp(c)
-				return nil
+			err = handleFlags(c, config)
+			if err != nil {
+				return err
 			}
 
 			// run the command
@@ -71,4 +49,32 @@ func Cmd() *cli.Command {
 			return nil
 		},
 	}
+}
+
+func handleFlags(c *cli.Context, config *config.Config) error {
+
+	// handle list flag
+	if c.Bool("list") {
+		err := config.GetListing()
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	// handle output flag
+	if len(c.String("output")) != 0 {
+
+		formatted, err := config.Format(c.String("output"))
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(string(formatted))
+
+		return nil
+	}
+
+	return nil
 }
