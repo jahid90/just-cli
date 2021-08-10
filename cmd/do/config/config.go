@@ -1,13 +1,11 @@
 package config
 
 import (
-	"encoding/json"
 	"errors"
 
 	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/jahid90/just/lib/command"
 	"github.com/urfave/cli/v2"
-	"gopkg.in/yaml.v2"
 )
 
 // Config Parsed config that can be used to generate and run commands
@@ -38,7 +36,7 @@ func Parse(contents []byte) (*Config, error) {
 	}
 
 	version := j.Version
-	var cmdGeneratorFn command.GeneratorFn
+	var cmdGeneratorFn justfile.GeneratorFn
 
 	// we only allow the versions we know
 	switch version {
@@ -69,7 +67,7 @@ func Parse(contents []byte) (*Config, error) {
 	return config, nil
 }
 
-func generateConfig(j *justfile.Config, fn command.GeneratorFn) (*Config, error) {
+func generateConfig(j *justfile.Config, fn justfile.GeneratorFn) (*Config, error) {
 	config := &Config{
 		RunCmd: func(ctx *cli.Context) error {
 
@@ -90,26 +88,7 @@ func generateConfig(j *justfile.Config, fn command.GeneratorFn) (*Config, error)
 			return j.ShowListing()
 		},
 		Format: func(format string) ([]byte, error) {
-
-			if format == "json" {
-				formatted, err := json.MarshalIndent(j, "", "  ")
-				if err != nil {
-					return nil, err
-				}
-
-				return formatted, nil
-			}
-
-			if format == "yaml" {
-				formatted, err := yaml.Marshal(j)
-				if err != nil {
-					return nil, err
-				}
-
-				return formatted, nil
-			}
-
-			return nil, errors.New("error: output must be one of ['json', 'yaml']")
+			return j.Format(format)
 		},
 	}
 

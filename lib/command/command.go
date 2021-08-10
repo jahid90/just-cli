@@ -4,12 +4,7 @@ import (
 	"errors"
 	"os"
 	"os/exec"
-
-	"github.com/jahid90/just/cmd/do/config/justfile"
 )
-
-// GeneratorFn A function to generate an exec.Cmd that can be run
-type GeneratorFn func(string, []string, *justfile.Config) (*exec.Cmd, error)
 
 // Validate validates the command
 func Validate(command string) error {
