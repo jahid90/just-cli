@@ -8,7 +8,7 @@ import (
 	"github.com/jahid90/just/cmd/do/config/justfile"
 )
 
-var commandV4GeneratorFn = func(alias string, appendArgs []string, j *justfile.Config) (*exec.Cmd, error) {
+var commandV5GeneratorFn = func(alias string, appendArgs []string, j *justfile.Config) (*exec.Cmd, error) {
 
 	entry, err := j.LookupAlias(alias)
 	if err != nil {

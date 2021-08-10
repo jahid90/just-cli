@@ -12,7 +12,7 @@ import (
 	"github.com/jahid90/just/cmd/do/config/justfile"
 )
 
-var commandV2GeneratorFn = func(alias string, appendArgs []string, j *justfile.Just) (*exec.Cmd, error) {
+var commandV2GeneratorFn = func(alias string, appendArgs []string, j *justfile.Config) (*exec.Cmd, error) {
 
 	entry, err := j.LookupAlias(alias)
 	if err != nil {

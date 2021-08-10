@@ -27,13 +27,12 @@ type GetListingFunc func() error
 type FormatFunc func(format string) ([]byte, error)
 
 // GeneratorFn Function to generate the config
-type GeneratorFn func(j *justfile.Just) (*Config, error)
+type GeneratorFn func(j *justfile.Config) (*Config, error)
 
 // Parse Parses the config file and generates a suitable Config
 func Parse(contents []byte) (*Config, error) {
 
-	configfileParserFn := justfile.GetParserFn()
-	j, err := configfileParserFn(contents)
+	j, err := justfile.GetConfig(contents)
 	if err != nil {
 		return nil, err
 	}
@@ -55,6 +54,9 @@ func Parse(contents []byte) (*Config, error) {
 	case "4":
 		cmdGeneratorFn = commandV4GeneratorFn
 
+	case "5":
+		cmdGeneratorFn = commandV5GeneratorFn
+
 	default:
 		return nil, errors.New("error: unknown version: " + version)
 	}
@@ -67,7 +69,7 @@ func Parse(contents []byte) (*Config, error) {
 	return config, nil
 }
 
-func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
+func generateConfig(j *justfile.Config, fn command.GeneratorFn) (*Config, error) {
 	config := &Config{
 		RunCmd: func(ctx *cli.Context) error {
 
@@ -84,7 +86,9 @@ func generateConfig(j *justfile.Just, fn command.GeneratorFn) (*Config, error) {
 
 			return nil
 		},
-		GetListing: j.ShowListing,
+		GetListing: func() error {
+			return j.ShowListing()
+		},
 		Format: func(format string) ([]byte, error) {
 
 			if format == "json" {

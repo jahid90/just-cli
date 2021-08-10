@@ -11,7 +11,7 @@ import (
 	"github.com/jahid90/just/lib/parser"
 )
 
-var commandV3GeneratorFn = func(alias string, appendArgs []string, j *justfile.Just) (*exec.Cmd, error) {
+var commandV3GeneratorFn = func(alias string, appendArgs []string, j *justfile.Config) (*exec.Cmd, error) {
 
 	entry, err := j.LookupAlias(alias)
 	if err != nil {

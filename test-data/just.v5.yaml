@@ -1,0 +1,44 @@
+version: '5'
+commands:
+  - alias: cluster:down
+    command: kind delete cluster --name local
+  - alias: cluster:up
+    command: kind create cluster --config cluster.yaml --name local
+  - alias: images:load
+    command: cat images.txt | xargs -I{} kind load docker-image {}
+  - alias: ingress:down
+    command: find ingress/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: ingress:up
+    command: find ingress/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
+  - alias: lb:down
+    command: find loadbalancer/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: lb:up
+    command: find loadbalancer/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
+  - alias: logging:down
+    command: find logging/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: logging:up
+    command: find logging/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
+  - alias: ns:down
+    command: find namespaces/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: ns:up
+    command: find namespaces/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
+  - alias: server:down
+    command: find server/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: server:up
+    command: find server/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
+  - alias: storage:down
+    command: find storage/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: storage:up
+    command: find storage/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
+  - alias: telemetry:down
+    command: find telemetry/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: telemetry:up
+    command: find telemetry/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
+  - alias: tools:down
+    command: find tools/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: tools:up
+    command: find tools/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
+  - alias: widgets:down
+    command: find widgets/ -iname '*.yaml' | sort -r | xargs -I{} kubectl delete -f {}
+  - alias: widgets:up
+    command: find widgets/ -iname '*.yaml' | sort | xargs -I{} kubectl apply -f {}
