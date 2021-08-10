@@ -59,10 +59,10 @@ func (j *JustV5) ShowListing() error {
 	fmt.Fprintln(w)
 	fmt.Fprintln(w, "Available commands are:")
 	fmt.Fprintln(w)
-	fmt.Fprintln(w, "  ALIAS\t\tCOMMAND")
-	fmt.Fprintln(w, "  -----\t\t-------")
+	fmt.Fprintln(w, "  ALIAS\t\tDESCRIPTION\t\tCOMMAND")
+	fmt.Fprintln(w, "  -----\t\t-------\t\t-----------")
 	for _, cmd := range j.Commands {
-		fmt.Fprintln(w, "  "+cmd.Alias+"\t\t"+cmd.Exec+"\t")
+		fmt.Fprintln(w, "  "+cmd.Alias+"\t\t"+cmd.Description+"\t\t"+cmd.Exec)
 	}
 	fmt.Fprintln(w)
 

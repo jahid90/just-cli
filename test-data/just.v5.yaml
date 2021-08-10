@@ -2,6 +2,7 @@ version: '5'
 commands:
   - alias: list
     command: ls
+    description: List the contents of the current directory
   - alias: cluster:down
     command: kind delete cluster --name local
   - alias: cluster:up
