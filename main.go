@@ -26,18 +26,7 @@ func main() {
 		"\tTo execute a command, run `just <alias>`"
 
 	app.Version = "1.0.0"
-	app.Flags = []cli.Flag{
-		&cli.StringFlag{
-			Name:    "config-file",
-			Aliases: []string{"c"},
-			Usage:   "the config file to use",
-		},
-		&cli.StringFlag{
-			Name:    "output",
-			Aliases: []string{"o"},
-			Usage:   "Print config as json/yaml",
-		},
-	}
+	app.Flags = []cli.Flag{}
 	app.Commands = cmd.GetSubCommands()
 
 	// Make doCmd the default when no subcommand is specified

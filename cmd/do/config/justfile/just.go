@@ -81,3 +81,17 @@ func (j *Just) LookupAlias(alias string) (string, error) {
 func (j *Just) LookupDependencies(alias string) ([]string, error) {
 	return nil, errors.New("error: not supported")
 }
+
+// Convert Converts config to v5
+func (j *Just) Convert() ([]byte, error) {
+
+	v5 := &JustV5{}
+	v5.Version = "5"
+	v5.Commands = []Command{}
+
+	for alias, exec := range j.Commands {
+		v5.Commands = append(v5.Commands, Command{Alias: alias, Exec: exec, Description: "", Depends: []string{}})
+	}
+
+	return yaml.Marshal(v5)
+}

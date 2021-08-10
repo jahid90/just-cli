@@ -18,11 +18,13 @@ type Config struct {
 	justV5             *JustV5
 	Version            string
 	Format             FormatFn
+	Convert            ConvertFn
 	ShowListing        ShowListingFn
 	LookupAlias        LookupAliasFn
 	LookupDependencies LookupDependenciesFn
 }
 
+type ConvertFn func() ([]byte, error)
 type FormatFn func(format string) ([]byte, error)
 type ShowListingFn func() error
 type LookupAliasFn func(alias string) (string, error)
@@ -55,6 +57,7 @@ func GetConfig(contents []byte) (*Config, error) {
 
 		c.justV5 = j
 		c.Format = j.Format
+		c.Convert = j.Convert
 		c.ShowListing = j.ShowListing
 		c.LookupAlias = j.LookupAlias
 		c.LookupDependencies = j.LookupDependencies
@@ -69,6 +72,7 @@ func GetConfig(contents []byte) (*Config, error) {
 
 		c.just = j
 		c.Format = j.Format
+		c.Convert = j.Convert
 		c.ShowListing = j.ShowListing
 		c.LookupAlias = j.LookupAlias
 		c.LookupDependencies = j.LookupDependencies

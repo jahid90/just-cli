@@ -13,10 +13,24 @@ func Cmd() *cli.Command {
 		Name:  "do",
 		Usage: "Runs a command",
 		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "config-file",
+				Aliases: []string{"c"},
+				Usage:   "the config file to use",
+			},
 			&cli.BoolFlag{
 				Name:    "list",
 				Aliases: []string{"l"},
 				Usage:   "list the available commands",
+			},
+			&cli.StringFlag{
+				Name:    "output",
+				Aliases: []string{"o"},
+				Usage:   "Print config as json/yaml",
+			},
+			&cli.BoolFlag{
+				Name:  "convert",
+				Usage: "Convert config files between different versions",
 			},
 		},
 		Action: func(c *cli.Context) error {
@@ -77,6 +91,17 @@ func handleFlags(c *cli.Context, config *config.Config) error {
 		}
 
 		fmt.Println(string(formatted))
+
+		return nil
+	}
+
+	if c.Bool("convert") {
+		converted, err := config.Convert()
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(string(converted))
 
 		return nil
 	}

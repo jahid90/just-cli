@@ -13,6 +13,7 @@ type Config struct {
 	RunCmd     RunCmdFunc
 	GetListing GetListingFunc
 	Format     FormatFunc
+	Convert    ConvertFn
 }
 
 // RunCmdFunc Function to run the command corresponding to the alias received in the args
@@ -26,6 +27,9 @@ type FormatFunc func(format string) ([]byte, error)
 
 // GeneratorFn Function to generate the config
 type GeneratorFn func(c *justfile.Config) (*Config, error)
+
+// ConvertFn Function to convert configs between versions
+type ConvertFn func() ([]byte, error)
 
 // Parse Parses the config file and generates a suitable Config
 func Parse(contents []byte) (*Config, error) {
@@ -89,6 +93,9 @@ func generateConfig(c *justfile.Config, fn justfile.GeneratorFn) (*Config, error
 		},
 		Format: func(format string) ([]byte, error) {
 			return c.Format(format)
+		},
+		Convert: func() ([]byte, error) {
+			return c.Convert()
 		},
 	}
 

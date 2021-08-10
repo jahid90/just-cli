@@ -98,3 +98,17 @@ func (j *JustV5) LookupDependencies(alias string) ([]string, error) {
 
 	return []string{}, nil
 }
+
+// Convert Converts config to v4
+func (j *JustV5) Convert() ([]byte, error) {
+
+	v4 := &Just{}
+	v4.Version = "4"
+	v4.Commands = make(map[string]string)
+
+	for _, cmd := range j.Commands {
+		v4.Commands[cmd.Alias] = cmd.Exec
+	}
+
+	return yaml.Marshal(v4)
+}
