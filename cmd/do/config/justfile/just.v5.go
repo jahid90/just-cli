@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"text/tabwriter"
 
 	"gopkg.in/yaml.v2"
@@ -18,9 +19,10 @@ type JustV5 struct {
 
 // Command A type representing a command in a JustV5 struct
 type Command struct {
-	Alias       string `json:"alias" yaml:"alias"`
-	Exec        string `json:"command" yaml:"command"`
-	Description string `json:"description" yaml:"description"`
+	Alias       string   `json:"alias" yaml:"alias"`
+	Exec        string   `json:"command" yaml:"command"`
+	Description string   `json:"description" yaml:"description"`
+	Depends     []string `json:"depends" yaml:"depends"`
 }
 
 // Format Formats the config file into the requested format
@@ -59,10 +61,10 @@ func (j *JustV5) ShowListing() error {
 	fmt.Fprintln(w)
 	fmt.Fprintln(w, "Available commands are:")
 	fmt.Fprintln(w)
-	fmt.Fprintln(w, "  ALIAS\t\tDESCRIPTION\t\tCOMMAND")
-	fmt.Fprintln(w, "  -----\t\t-------\t\t-----------")
+	fmt.Fprintln(w, "  ALIAS\t\tDESCRIPTION\t\tCOMMAND\t\tDEPENDS")
+	fmt.Fprintln(w, "  -----\t\t-----------\t\t-------\t\t-------")
 	for _, cmd := range j.Commands {
-		fmt.Fprintln(w, "  "+cmd.Alias+"\t\t"+cmd.Description+"\t\t"+cmd.Exec)
+		fmt.Fprintln(w, "  "+cmd.Alias+"\t\t"+cmd.Description+"\t\t"+cmd.Exec+"\t\t"+strings.Join(cmd.Depends, ","))
 	}
 	fmt.Fprintln(w)
 
@@ -83,4 +85,16 @@ func (j *JustV5) LookupAlias(alias string) (string, error) {
 	}
 
 	return "", errors.New("error: alias `" + alias + "` not found in the config file")
+}
+
+// LookupDependencies Returns the dependent aliases of an alias
+func (j *JustV5) LookupDependencies(alias string) ([]string, error) {
+
+	for _, cmd := range j.Commands {
+		if cmd.Alias == alias {
+			return cmd.Depends, nil
+		}
+	}
+
+	return []string{}, nil
 }

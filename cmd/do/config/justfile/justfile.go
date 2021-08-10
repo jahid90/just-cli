@@ -14,20 +14,22 @@ type Version struct {
 
 // Config A type representing a generic just config
 type Config struct {
-	just        *Just
-	justV5      *JustV5
-	Version     string
-	ShowListing ShowListingFn
-	LookupAlias LookupAliasFn
-	Format      FormatFn
+	just               *Just
+	justV5             *JustV5
+	Version            string
+	Format             FormatFn
+	ShowListing        ShowListingFn
+	LookupAlias        LookupAliasFn
+	LookupDependencies LookupDependenciesFn
 }
 
-type FormatFn func(string) ([]byte, error)
+type FormatFn func(format string) ([]byte, error)
 type ShowListingFn func() error
-type LookupAliasFn func(string) (string, error)
+type LookupAliasFn func(alias string) (string, error)
+type LookupDependenciesFn func(alias string) ([]string, error)
 
 // GeneratorFn A function to generate an exec.Cmd that can be run
-type GeneratorFn func(string, []string, *Config) (*exec.Cmd, error)
+type GeneratorFn func(string, []string, *Config) ([]*exec.Cmd, error)
 
 // GetParserFn Returns a parser function to parse the config file
 func GetConfig(contents []byte) (*Config, error) {
@@ -55,6 +57,7 @@ func GetConfig(contents []byte) (*Config, error) {
 		c.Format = j.Format
 		c.ShowListing = j.ShowListing
 		c.LookupAlias = j.LookupAlias
+		c.LookupDependencies = j.LookupDependencies
 
 	} else {
 
@@ -68,6 +71,7 @@ func GetConfig(contents []byte) (*Config, error) {
 		c.Format = j.Format
 		c.ShowListing = j.ShowListing
 		c.LookupAlias = j.LookupAlias
+		c.LookupDependencies = j.LookupDependencies
 
 	}
 

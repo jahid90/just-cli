@@ -1,14 +1,11 @@
-package config
+package justfile
 
 import (
-	"fmt"
 	"os/exec"
 	"strings"
-
-	"github.com/jahid90/just/cmd/do/config/justfile"
 )
 
-var commandV5GeneratorFn = func(alias string, appendArgs []string, j *justfile.Config) (*exec.Cmd, error) {
+var CommandV4GeneratorFn = func(alias string, appendArgs []string, j *Config) ([]*exec.Cmd, error) {
 
 	entry, err := j.LookupAlias(alias)
 	if err != nil {
@@ -20,9 +17,7 @@ var commandV5GeneratorFn = func(alias string, appendArgs []string, j *justfile.C
 		entry = entry + " " + strings.Join(appendArgs, " ")
 	}
 
-	fmt.Println("just @" + entry)
-
 	cmd := exec.Command("sh", "-c", entry)
 
-	return cmd, nil
+	return []*exec.Cmd{cmd}, nil
 }

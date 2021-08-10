@@ -76,3 +76,8 @@ func (j *Just) LookupAlias(alias string) (string, error) {
 
 	return entry, nil
 }
+
+// LookupDependencies Returns the dependent aliases of an alias
+func (j *Just) LookupDependencies(alias string) ([]string, error) {
+	return nil, errors.New("error: not supported")
+}

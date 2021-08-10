@@ -40,6 +40,11 @@ func Cmd() *cli.Command {
 				return err
 			}
 
+			// return if there are no args to run
+			if c.Args().Len() == 0 {
+				return nil
+			}
+
 			// run the command
 			err = config.RunCmd(c)
 			if err != nil {

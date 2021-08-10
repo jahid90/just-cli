@@ -1,17 +1,15 @@
-package config
+package justfile
 
 import (
 	"errors"
-	"fmt"
 	"os/exec"
 	"strings"
 
-	"github.com/jahid90/just/cmd/do/config/justfile"
 	"github.com/jahid90/just/lib/lexer"
 	"github.com/jahid90/just/lib/parser"
 )
 
-var commandV3GeneratorFn = func(alias string, appendArgs []string, j *justfile.Config) (*exec.Cmd, error) {
+var CommandV3GeneratorFn = func(alias string, appendArgs []string, j *Config) ([]*exec.Cmd, error) {
 
 	entry, err := j.LookupAlias(alias)
 	if err != nil {
@@ -22,8 +20,6 @@ var commandV3GeneratorFn = func(alias string, appendArgs []string, j *justfile.C
 	if len(appendArgs) > 0 {
 		entry = entry + " " + strings.Join(appendArgs, " ")
 	}
-
-	fmt.Println("just @" + entry)
 
 	lexer := lexer.NewLexer(strings.NewReader(entry))
 	buffer := lexer.Run()

@@ -41,19 +41,19 @@ func Parse(contents []byte) (*Config, error) {
 	// we only allow the versions we know
 	switch version {
 	case "1":
-		cmdGeneratorFn = commandV1GeneratorFn
+		cmdGeneratorFn = justfile.CommandV1GeneratorFn
 
 	case "2":
-		cmdGeneratorFn = commandV2GeneratorFn
+		cmdGeneratorFn = justfile.CommandV2GeneratorFn
 
 	case "3":
-		cmdGeneratorFn = commandV3GeneratorFn
+		cmdGeneratorFn = justfile.CommandV3GeneratorFn
 
 	case "4":
-		cmdGeneratorFn = commandV4GeneratorFn
+		cmdGeneratorFn = justfile.CommandV4GeneratorFn
 
 	case "5":
-		cmdGeneratorFn = commandV5GeneratorFn
+		cmdGeneratorFn = justfile.CommandV5GeneratorFn
 
 	default:
 		return nil, errors.New("error: unknown version: " + version)

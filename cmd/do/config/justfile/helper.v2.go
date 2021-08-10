@@ -1,4 +1,4 @@
-package config
+package justfile
 
 import (
 	"errors"
@@ -8,11 +8,9 @@ import (
 	"strings"
 
 	"github.com/jahid90/just/lib"
-
-	"github.com/jahid90/just/cmd/do/config/justfile"
 )
 
-var commandV2GeneratorFn = func(alias string, appendArgs []string, j *justfile.Config) (*exec.Cmd, error) {
+var CommandV2GeneratorFn = func(alias string, appendArgs []string, j *Config) ([]*exec.Cmd, error) {
 
 	entry, err := j.LookupAlias(alias)
 	if err != nil {
@@ -23,9 +21,6 @@ var commandV2GeneratorFn = func(alias string, appendArgs []string, j *justfile.C
 	if len(appendArgs) > 0 {
 		entry = entry + " " + strings.Join(appendArgs, " ")
 	}
-
-	// output the command we are running
-	fmt.Println("just @" + entry)
 
 	reduced, err := parseCommandLine(entry)
 	if err != nil {
@@ -46,7 +41,7 @@ var commandV2GeneratorFn = func(alias string, appendArgs []string, j *justfile.C
 	// generate the command; ignore any additional arguments supplied
 	cmd := exec.Command("sh", "-c", reduced)
 
-	return cmd, nil
+	return []*exec.Cmd{cmd}, nil
 }
 
 func parseCommandLine(input string) (string, error) {
