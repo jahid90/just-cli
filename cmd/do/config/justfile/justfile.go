@@ -1,7 +1,6 @@
 package justfile
 
 import (
-	"fmt"
 	"os/exec"
 
 	"github.com/jahid90/just/lib"
@@ -34,7 +33,7 @@ type GeneratorFn func(string, []string, *Config) (*exec.Cmd, error)
 func GetConfig(contents []byte) (*Config, error) {
 
 	v := &Version{}
-	err := lib.ParseJSON(contents, v)
+	err := lib.ParseJson(contents, v)
 	if err != nil {
 		err := lib.ParseYaml(contents, v)
 		if err != nil {
@@ -42,12 +41,10 @@ func GetConfig(contents []byte) (*Config, error) {
 		}
 	}
 
-	fmt.Println("version:", v.Version)
-
 	if v.Version == "5" {
 
 		j := &JustV5{}
-		err = lib.ParseJSON(contents, j)
+		err = lib.ParseJson(contents, j)
 		if err != nil {
 			err := lib.ParseYaml(contents, j)
 			if err != nil {
@@ -67,7 +64,7 @@ func GetConfig(contents []byte) (*Config, error) {
 	}
 
 	j := &Just{}
-	err = lib.ParseJSON(contents, j)
+	err = lib.ParseJson(contents, j)
 	if err != nil {
 		err := lib.ParseYaml(contents, j)
 		if err != nil {

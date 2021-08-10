@@ -1,5 +1,7 @@
 version: '5'
 commands:
+  - alias: list
+    command: ls
   - alias: cluster:down
     command: kind delete cluster --name local
   - alias: cluster:up

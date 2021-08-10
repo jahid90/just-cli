@@ -74,5 +74,13 @@ func (j *JustV5) ShowListing() error {
 
 // LookupAlias Returns the command corresponding to an alias
 func (j *JustV5) LookupAlias(alias string) (string, error) {
-	return "", errors.New("warn: not yet implemented")
+
+	// check if the alias is present in the config file
+	for _, cmd := range j.Commands {
+		if cmd.Alias == alias {
+			return cmd.Exec, nil
+		}
+	}
+
+	return "", errors.New("error: alias `" + alias + "` not found in the config file")
 }
