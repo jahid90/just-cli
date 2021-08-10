@@ -9,7 +9,8 @@ var CommandV5GeneratorFn = func(alias string, appendArgs []string, c *Config) ([
 
 	cmds := []*exec.Cmd{}
 
-	// first run any dependent commands
+	// first run any dependent commands;
+	// TODO: handle transitive dependencies and cycles
 	deps, _ := c.LookupDependencies(alias)
 	for _, dep := range deps {
 		a, err := c.LookupAlias(dep)
