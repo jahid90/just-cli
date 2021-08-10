@@ -33,52 +33,56 @@ type GeneratorFn func(string, []string, *Config) (*exec.Cmd, error)
 func GetConfig(contents []byte) (*Config, error) {
 
 	v := &Version{}
-	err := lib.ParseJson(contents, v)
+	err := parseAsJsonOrYaml(contents, v)
 	if err != nil {
-		err := lib.ParseYaml(contents, v)
-		if err != nil {
-			return nil, err
-		}
+		return nil, err
 	}
+
+	c := &Config{}
+	c.Version = v.Version
+	c.just = nil
+	c.justV5 = nil
 
 	if v.Version == "5" {
 
 		j := &JustV5{}
-		err = lib.ParseJson(contents, j)
+		err = parseAsJsonOrYaml(contents, j)
 		if err != nil {
-			err := lib.ParseYaml(contents, j)
-			if err != nil {
-				return nil, err
-			}
+			return nil, err
 		}
 
-		c := &Config{}
-		c.Version = v.Version
-		c.just = nil
 		c.justV5 = j
 		c.Format = j.Format
 		c.ShowListing = j.ShowListing
 		c.LookupAlias = j.LookupAlias
 
-		return c, nil
-	}
+	} else {
 
-	j := &Just{}
-	err = lib.ParseJson(contents, j)
-	if err != nil {
-		err := lib.ParseYaml(contents, j)
+		j := &Just{}
+		err = parseAsJsonOrYaml(contents, j)
 		if err != nil {
 			return nil, err
 		}
+
+		c.just = j
+		c.Format = j.Format
+		c.ShowListing = j.ShowListing
+		c.LookupAlias = j.LookupAlias
+
 	}
 
-	c := &Config{}
-	c.Version = v.Version
-	c.just = j
-	c.justV5 = nil
-	c.Format = j.Format
-	c.ShowListing = j.ShowListing
-	c.LookupAlias = j.LookupAlias
-
 	return c, nil
+}
+
+func parseAsJsonOrYaml(contents []byte, container interface{}) error {
+
+	err := lib.ParseJson(contents, container)
+	if err != nil {
+		err := lib.ParseYaml(contents, container)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

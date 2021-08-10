@@ -25,17 +25,17 @@ type GetListingFunc func() error
 type FormatFunc func(format string) ([]byte, error)
 
 // GeneratorFn Function to generate the config
-type GeneratorFn func(j *justfile.Config) (*Config, error)
+type GeneratorFn func(c *justfile.Config) (*Config, error)
 
 // Parse Parses the config file and generates a suitable Config
 func Parse(contents []byte) (*Config, error) {
 
-	j, err := justfile.GetConfig(contents)
+	c, err := justfile.GetConfig(contents)
 	if err != nil {
 		return nil, err
 	}
 
-	version := j.Version
+	version := c.Version
 	var cmdGeneratorFn justfile.GeneratorFn
 
 	// we only allow the versions we know
@@ -59,7 +59,7 @@ func Parse(contents []byte) (*Config, error) {
 		return nil, errors.New("error: unknown version: " + version)
 	}
 
-	config, err := generateConfig(j, cmdGeneratorFn)
+	config, err := generateConfig(c, cmdGeneratorFn)
 	if err != nil {
 		return nil, err
 	}
@@ -67,12 +67,12 @@ func Parse(contents []byte) (*Config, error) {
 	return config, nil
 }
 
-func generateConfig(j *justfile.Config, fn justfile.GeneratorFn) (*Config, error) {
+func generateConfig(c *justfile.Config, fn justfile.GeneratorFn) (*Config, error) {
 	config := &Config{
 		RunCmd: func(ctx *cli.Context) error {
 
 			alias := ctx.Args().First()
-			cmd, err := fn(alias, ctx.Args().Tail(), j)
+			cmd, err := fn(alias, ctx.Args().Tail(), c)
 			if err != nil {
 				return err
 			}
@@ -85,10 +85,10 @@ func generateConfig(j *justfile.Config, fn justfile.GeneratorFn) (*Config, error
 			return nil
 		},
 		GetListing: func() error {
-			return j.ShowListing()
+			return c.ShowListing()
 		},
 		Format: func(format string) ([]byte, error) {
-			return j.Format(format)
+			return c.Format(format)
 		},
 	}
 
