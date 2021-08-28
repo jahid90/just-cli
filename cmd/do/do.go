@@ -80,16 +80,17 @@ func handleFlags(c *cli.Context, config *config.Config) error {
 	// handle list flag
 	if c.Bool("list") {
 
-		if c.Bool("short") {
-			err := config.GetShortListing()
-			if err != nil {
-				return err
-			}
-
-			return nil
+		err := config.GetListing()
+		if err != nil {
+			return err
 		}
 
-		err := config.GetListing()
+		return nil
+	}
+
+	// handle list short flag
+	if c.Bool("short") {
+		err := config.GetShortListing()
 		if err != nil {
 			return err
 		}
