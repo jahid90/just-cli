@@ -7,6 +7,7 @@ import (
 	"os"
 	"text/tabwriter"
 
+	"github.com/fatih/color"
 	"github.com/jahid90/just/lib"
 	"gopkg.in/yaml.v2"
 )
@@ -54,14 +55,15 @@ func (j *JustV5) ShowListing() error {
 		return errors.New("warn: no commands found in config")
 	}
 
+	fmt.Println()
 	fmt.Println("Available commands are:")
 	fmt.Println()
 	for _, cmd := range j.Commands {
-		fmt.Println("> " + cmd.Alias)
+		color.Yellow("> " + cmd.Alias)
 		if len(cmd.Description) != 0 {
-			fmt.Println("    " + lib.Ellipsify(cmd.Description, 80))
+			fmt.Println(lib.Ellipsify("    "+cmd.Description, 80))
 		}
-		fmt.Println("    Execs: " + lib.Ellipsify(cmd.Exec, 80))
+		fmt.Println(lib.Ellipsify("    Execs: "+cmd.Exec, 80))
 		if len(cmd.Depends) != 0 {
 			fmt.Println("    Depends On: ")
 			for _, dep := range cmd.Depends {
@@ -77,6 +79,14 @@ func (j *JustV5) ShowListing() error {
 // ShowShortListing Prints a table of the available commands
 func (j *JustV5) ShowShortListing() error {
 
+	// we have to wrap every print in tabwriter as color basically
+	// adds color codes to the string to print them on the screen
+	// and tabwriter will incorrectly assume the color ctrings to be
+	// of different length with the inclusion of the codes
+	strPrintWhite := color.New(color.FgWhite).SprintFunc()
+	strPrintBlue := color.New(color.FgBlue).SprintFunc()
+	strPrintYellow := color.New(color.FgYellow).SprintFunc()
+
 	// handle no commands listed in the config file
 	if len(j.Commands) == 0 {
 		return errors.New("warn: no commands found in config")
@@ -85,12 +95,13 @@ func (j *JustV5) ShowShortListing() error {
 	// format the listing in tabular form
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.TabIndent)
 	fmt.Fprintln(w)
-	fmt.Fprintln(w, "Available commands are:")
+	fmt.Fprintln(w, strPrintWhite("Available commands are:"))
 	fmt.Fprintln(w)
-	fmt.Fprintln(w, "  ALIAS\t\tCOMMAND")
-	fmt.Fprintln(w, "  -----\t\t-------")
+	// two blues to match coloring of alias
+	fmt.Fprintln(w, "  "+strPrintBlue("ALIAS")+"\t\t"+strPrintBlue("COMMAND"))
+	fmt.Fprintln(w, "  "+strPrintBlue("-----")+"\t\t"+strPrintBlue("-------"))
 	for _, cmd := range j.Commands {
-		fmt.Fprintln(w, "  "+cmd.Alias+"\t\t"+lib.Ellipsify(cmd.Exec, 50))
+		fmt.Fprintln(w, "  "+strPrintYellow(cmd.Alias)+"\t\t"+strPrintWhite(lib.Ellipsify(cmd.Exec, 60)))
 	}
 	fmt.Fprintln(w)
 

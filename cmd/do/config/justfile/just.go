@@ -7,6 +7,8 @@ import (
 	"os"
 	"text/tabwriter"
 
+	"github.com/fatih/color"
+	"github.com/jahid90/just/lib"
 	"gopkg.in/yaml.v2"
 )
 
@@ -42,6 +44,14 @@ func (j *Just) Format(format string) ([]byte, error) {
 // ShowListing Prints a table of the available commands
 func (j *Just) ShowListing() error {
 
+	// we have to wrap every print in tabwriter as color basically
+	// adds color codes to the string to print them on the screen
+	// and tabwriter will incorrectly assume the color ctrings to be
+	// of different length with the inclusion of the codes
+	strPrintWhite := color.New(color.FgWhite).SprintFunc()
+	strPrintBlue := color.New(color.FgBlue).SprintFunc()
+	strPrintYellow := color.New(color.FgYellow).SprintFunc()
+
 	// handle no commands listed in the config file
 	if len(j.Commands) == 0 {
 		return errors.New("warn: no commands found in config file")
@@ -50,12 +60,12 @@ func (j *Just) ShowListing() error {
 	// format the listing in tabular form
 	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', tabwriter.TabIndent)
 	fmt.Fprintln(w)
-	fmt.Fprintln(w, "Available commands are:")
+	fmt.Fprintln(w, strPrintWhite("Available commands are:"))
 	fmt.Fprintln(w)
-	fmt.Fprintln(w, "  ALIAS\t\tCOMMAND")
-	fmt.Fprintln(w, "  -----\t\t-------")
+	fmt.Fprintln(w, "  "+strPrintBlue("ALIAS")+"\t\t"+strPrintBlue("COMMAND"))
+	fmt.Fprintln(w, "  "+strPrintBlue("-----")+"\t\t"+strPrintBlue("-------"))
 	for alias, cmd := range j.Commands {
-		fmt.Fprintln(w, "  "+alias+"\t\t"+cmd+"\t")
+		fmt.Fprintln(w, "  "+strPrintYellow(alias)+"\t\t"+strPrintWhite(lib.Ellipsify(cmd, 60)))
 	}
 	fmt.Fprintln(w)
 
