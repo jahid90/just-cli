@@ -23,6 +23,11 @@ func Cmd() *cli.Command {
 				Aliases: []string{"l"},
 				Usage:   "list the available commands",
 			},
+			&cli.BoolFlag{
+				Name:    "short",
+				Aliases: []string{"s"},
+				Usage:   "list a short version of the available commands",
+			},
 			&cli.StringFlag{
 				Name:    "output",
 				Aliases: []string{"o"},
@@ -74,6 +79,16 @@ func handleFlags(c *cli.Context, config *config.Config) error {
 
 	// handle list flag
 	if c.Bool("list") {
+
+		if c.Bool("short") {
+			err := config.GetShortListing()
+			if err != nil {
+				return err
+			}
+
+			return nil
+		}
+
 		err := config.GetListing()
 		if err != nil {
 			return err

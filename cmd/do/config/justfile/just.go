@@ -65,6 +65,10 @@ func (j *Just) ShowListing() error {
 	return nil
 }
 
+func (j *Just) ShowShortListing() error {
+	return j.ShowListing()
+}
+
 // LookupAlias Returns the command corresponding to an alias
 func (j *Just) LookupAlias(alias string) (string, error) {
 

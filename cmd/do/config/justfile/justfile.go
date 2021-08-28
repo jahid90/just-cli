@@ -20,6 +20,7 @@ type Config struct {
 	Format             FormatFn
 	Convert            ConvertFn
 	ShowListing        ShowListingFn
+	ShowShortListing   ShowShortListingFn
 	LookupAlias        LookupAliasFn
 	LookupDependencies LookupDependenciesFn
 }
@@ -27,6 +28,7 @@ type Config struct {
 type ConvertFn func() ([]byte, error)
 type FormatFn func(format string) ([]byte, error)
 type ShowListingFn func() error
+type ShowShortListingFn func() error
 type LookupAliasFn func(alias string) (string, error)
 type LookupDependenciesFn func(alias string) ([]string, error)
 
@@ -59,6 +61,7 @@ func GetConfig(contents []byte) (*Config, error) {
 		c.Format = j.Format
 		c.Convert = j.Convert
 		c.ShowListing = j.ShowListing
+		c.ShowShortListing = j.ShowShortListing
 		c.LookupAlias = j.LookupAlias
 		c.LookupDependencies = j.LookupDependencies
 
@@ -74,6 +77,7 @@ func GetConfig(contents []byte) (*Config, error) {
 		c.Format = j.Format
 		c.Convert = j.Convert
 		c.ShowListing = j.ShowListing
+		c.ShowShortListing = j.ShowShortListing
 		c.LookupAlias = j.LookupAlias
 		c.LookupDependencies = j.LookupDependencies
 

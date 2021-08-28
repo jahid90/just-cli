@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"strings"
 	"text/tabwriter"
 
+	"github.com/jahid90/just/lib"
 	"gopkg.in/yaml.v2"
 )
 
@@ -48,12 +48,38 @@ func (j *JustV5) Format(format string) ([]byte, error) {
 	return nil, errors.New("error: output must be one of ['json', 'yaml']")
 }
 
-// ShowListing Prints a table of the available commands
+// ShowListing Prints a list of the avaliable commands
 func (j *JustV5) ShowListing() error {
+	if len(j.Commands) == 0 {
+		return errors.New("warn: no commands found in config")
+	}
+
+	fmt.Println("Available commands are:")
+	fmt.Println()
+	for _, cmd := range j.Commands {
+		fmt.Println("> " + cmd.Alias)
+		if len(cmd.Description) != 0 {
+			fmt.Println("    " + lib.Ellipsify(cmd.Description, 80))
+		}
+		fmt.Println("    Execs: " + lib.Ellipsify(cmd.Exec, 80))
+		if len(cmd.Depends) != 0 {
+			fmt.Println("    Depends On: ")
+			for _, dep := range cmd.Depends {
+				fmt.Println("      - " + dep)
+			}
+		}
+		fmt.Println()
+	}
+
+	return nil
+}
+
+// ShowShortListing Prints a table of the available commands
+func (j *JustV5) ShowShortListing() error {
 
 	// handle no commands listed in the config file
 	if len(j.Commands) == 0 {
-		return errors.New("warn: no commands found in config file")
+		return errors.New("warn: no commands found in config")
 	}
 
 	// format the listing in tabular form
@@ -61,10 +87,10 @@ func (j *JustV5) ShowListing() error {
 	fmt.Fprintln(w)
 	fmt.Fprintln(w, "Available commands are:")
 	fmt.Fprintln(w)
-	fmt.Fprintln(w, "  ALIAS\t\tDESCRIPTION\t\tCOMMAND\t\tDEPENDS")
-	fmt.Fprintln(w, "  -----\t\t-----------\t\t-------\t\t-------")
+	fmt.Fprintln(w, "  ALIAS\t\tCOMMAND")
+	fmt.Fprintln(w, "  -----\t\t-------")
 	for _, cmd := range j.Commands {
-		fmt.Fprintln(w, "  "+cmd.Alias+"\t\t"+cmd.Description+"\t\t"+cmd.Exec+"\t\t"+strings.Join(cmd.Depends, ","))
+		fmt.Fprintln(w, "  "+cmd.Alias+"\t\t"+lib.Ellipsify(cmd.Exec, 50))
 	}
 	fmt.Fprintln(w)
 

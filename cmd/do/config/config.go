@@ -10,10 +10,11 @@ import (
 
 // Config Parsed config that can be used to generate and run commands
 type Config struct {
-	RunCmd     RunCmdFunc
-	GetListing GetListingFunc
-	Format     FormatFunc
-	Convert    ConvertFn
+	RunCmd          RunCmdFunc
+	GetListing      GetListingFunc
+	GetShortListing GetShortListingFunc
+	Format          FormatFunc
+	Convert         ConvertFn
 }
 
 // RunCmdFunc Function to run the command corresponding to the alias received in the args
@@ -21,6 +22,9 @@ type RunCmdFunc func(c *cli.Context) error
 
 // GetListingFunc Function to generate listing of available commands
 type GetListingFunc func() error
+
+// GetListingFunc Function to generate a short listing of available commands
+type GetShortListingFunc func() error
 
 // FormatFunc Function to format the config in known formats
 type FormatFunc func(format string) ([]byte, error)
@@ -90,6 +94,9 @@ func generateConfig(c *justfile.Config, fn justfile.GeneratorFn) (*Config, error
 		},
 		GetListing: func() error {
 			return c.ShowListing()
+		},
+		GetShortListing: func() error {
+			return c.ShowShortListing()
 		},
 		Format: func(format string) ([]byte, error) {
 			return c.Format(format)
