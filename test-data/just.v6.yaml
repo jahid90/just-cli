@@ -1,2 +1,20 @@
 version: 6
-
+commands:
+  build:
+    description: Builds the app
+    steps:
+      - uses: action/webpack-setup@v1
+      - name: Invoke webpack to generate the assets
+        env:
+          - NODE_ENV=production
+        run: webpack-cli
+  test:
+    description: Tests the app
+    needs:
+      - build
+    steps:
+      - uses: action/jest-setup@v2
+      - name: Invoke jest
+        env:
+          - NODE_ENV=test
+        run: yarn test

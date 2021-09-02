@@ -101,10 +101,10 @@ func (j *Just) Convert() ([]byte, error) {
 
 	v5 := &JustV5{}
 	v5.Version = "5"
-	v5.Commands = []Command{}
+	v5.Commands = []CommandV5{}
 
 	for alias, exec := range j.Commands {
-		v5.Commands = append(v5.Commands, Command{Alias: alias, Exec: exec, Description: "", Depends: []string{}})
+		v5.Commands = append(v5.Commands, CommandV5{Alias: alias, Exec: exec, Description: "", Depends: []string{}})
 	}
 
 	return yaml.Marshal(v5)

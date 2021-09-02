@@ -1,4 +1,4 @@
-package justfile
+package v6
 
 import (
 	"encoding/json"
@@ -12,22 +12,33 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// JustV5 A type representing a v5 just config
-type JustV5 struct {
-	Version  string      `json:"version" yaml:"version"`
-	Commands []CommandV5 `json:"commands" yaml:"commands"`
+// Just A type representing a v6 just config
+type Just struct {
+	Version  string             `json:"version"`
+	Commands map[string]Command `json:"commands"`
 }
 
-// Command A type representing a command in a JustV5 struct
-type CommandV5 struct {
-	Alias       string   `json:"alias" yaml:"alias"`
-	Exec        string   `json:"command" yaml:"command"`
-	Description string   `json:"description" yaml:"description"`
-	Depends     []string `json:"depends" yaml:"depends"`
+// Command A type representing a command
+// A command can depend on other commands via the 'needs' directive
+// A command can have multiple steps
+type Command struct {
+	Description string   `json:"description"`
+	Needs       []string `json:"needs"`
+	Steps       []Step   `json:"steps"`
+}
+
+// Step A type representing each step of a command
+// A step can either use a pre-defined step action via the 'uses' directive
+// or define the step using a name, env vars and the command to run
+type Step struct {
+	Uses string   `json:"uses"`
+	Name string   `json:"name"`
+	Env  []string `json:"env"`
+	Run  string   `json:"run"`
 }
 
 // Format Formats the config file into the requested format
-func (j *JustV5) Format(format string) ([]byte, error) {
+func (j *Just) Format(format string) ([]byte, error) {
 	if format == "json" {
 		formatted, err := json.MarshalIndent(j, "", "  ")
 		if err != nil {
@@ -50,7 +61,7 @@ func (j *JustV5) Format(format string) ([]byte, error) {
 }
 
 // ShowListing Prints a list of the avaliable commands
-func (j *JustV5) ShowListing() error {
+func (j *Just) ShowListing() error {
 	if len(j.Commands) == 0 {
 		return errors.New("warn: no commands found in config")
 	}
@@ -58,16 +69,35 @@ func (j *JustV5) ShowListing() error {
 	fmt.Println()
 	fmt.Println("Available commands are:")
 	fmt.Println()
-	for _, cmd := range j.Commands {
-		color.Yellow("> " + cmd.Alias)
+	for alias, cmd := range j.Commands {
+		color.Yellow("> " + alias)
 		if len(cmd.Description) != 0 {
+			fmt.Println()
 			fmt.Println(lib.Ellipsify("    "+cmd.Description, 80))
 		}
-		fmt.Println(lib.Ellipsify("    Execs: "+cmd.Exec, 80))
-		if len(cmd.Depends) != 0 {
-			fmt.Println("    Depends On: ")
-			for _, dep := range cmd.Depends {
-				fmt.Println("      - " + dep)
+		if len(cmd.Needs) != 0 {
+			fmt.Println()
+			fmt.Println("    Depends On:")
+			for _, dep := range cmd.Needs {
+				color.Yellow("      - " + dep)
+			}
+		}
+		if len(cmd.Steps) != 0 {
+			fmt.Println()
+			fmt.Println("    Steps:")
+			for _, step := range cmd.Steps {
+				if len(step.Uses) != 0 {
+					fmt.Println("      - " + step.Uses)
+				} else {
+					fmt.Println("      - " + step.Name)
+					if len(step.Env) != 0 {
+						fmt.Println("        Env:")
+						for _, env := range step.Env {
+							fmt.Println("          - " + env)
+						}
+					}
+					fmt.Println("        Run: " + step.Run)
+				}
 			}
 		}
 		fmt.Println()
@@ -77,7 +107,7 @@ func (j *JustV5) ShowListing() error {
 }
 
 // ShowShortListing Prints a table of the available commands
-func (j *JustV5) ShowShortListing() error {
+func (j *Just) ShowShortListing() error {
 
 	// we have to wrap every print in tabwriter as color basically
 	// adds color codes to the string to print them on the screen
@@ -100,8 +130,8 @@ func (j *JustV5) ShowShortListing() error {
 	// two blues to match coloring of alias
 	fmt.Fprintln(w, "  "+strPrintBlue("ALIAS")+"\t\t"+strPrintBlue("COMMAND"))
 	fmt.Fprintln(w, "  "+strPrintBlue("-----")+"\t\t"+strPrintBlue("-------"))
-	for _, cmd := range j.Commands {
-		fmt.Fprintln(w, "  "+strPrintYellow(cmd.Alias)+"\t\t"+strPrintWhite(lib.Ellipsify(cmd.Exec, 60)))
+	for alias, cmd := range j.Commands {
+		fmt.Fprintln(w, "  "+strPrintYellow(alias)+"\t\t"+strPrintWhite(lib.Ellipsify(cmd.Description, 60)))
 	}
 	fmt.Fprintln(w)
 
@@ -112,12 +142,13 @@ func (j *JustV5) ShowShortListing() error {
 }
 
 // LookupAlias Returns the command corresponding to an alias
-func (j *JustV5) LookupAlias(alias string) (string, error) {
+func (j *Just) LookupAlias(alias string) (string, error) {
 
 	// check if the alias is present in the config file
-	for _, cmd := range j.Commands {
-		if cmd.Alias == alias {
-			return cmd.Exec, nil
+	for aka, cmd := range j.Commands {
+		if aka == alias {
+			// TODO - fix this
+			return cmd.Description, nil
 		}
 	}
 
@@ -125,11 +156,11 @@ func (j *JustV5) LookupAlias(alias string) (string, error) {
 }
 
 // LookupDependencies Returns the dependent aliases of an alias
-func (j *JustV5) LookupDependencies(alias string) ([]string, error) {
+func (j *Just) LookupDependencies(alias string) ([]string, error) {
 
-	for _, cmd := range j.Commands {
-		if cmd.Alias == alias {
-			return cmd.Depends, nil
+	for aka, cmd := range j.Commands {
+		if aka == alias {
+			return cmd.Needs, nil
 		}
 	}
 
@@ -137,15 +168,6 @@ func (j *JustV5) LookupDependencies(alias string) ([]string, error) {
 }
 
 // Convert Converts config to v4
-func (j *JustV5) Convert() ([]byte, error) {
-
-	v4 := &Just{}
-	v4.Version = "4"
-	v4.Commands = make(map[string]string)
-
-	for _, cmd := range j.Commands {
-		v4.Commands[cmd.Alias] = cmd.Exec
-	}
-
-	return yaml.Marshal(v4)
+func (j *Just) Convert() ([]byte, error) {
+	return nil, errors.New("warn: not supported")
 }

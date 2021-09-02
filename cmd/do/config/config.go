@@ -63,6 +63,9 @@ func Parse(contents []byte) (*Config, error) {
 	case "5":
 		cmdGeneratorFn = justfile.CommandV5GeneratorFn
 
+	case "6":
+		cmdGeneratorFn = justfile.CommandV6GeneratorFn
+
 	default:
 		return nil, errors.New("error: unknown version: " + version)
 	}

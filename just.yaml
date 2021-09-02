@@ -18,6 +18,8 @@ commands:
     command: just --config-file test-data/just.v5.yaml --list
   - alias: test:v6
     command: just --config-file test-data/just.v6.yaml --list
+  - alias: test:v7
+    command: just --config-file test-data/just.v7.yaml --list
   - alias: longline
     command: composer compose --in test-data/template.yaml --values test-data/values.yaml
       --out test-data/generated.yaml --set variable1=value1 --set variable2=value2

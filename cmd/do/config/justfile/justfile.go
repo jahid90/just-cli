@@ -3,6 +3,7 @@ package justfile
 import (
 	"os/exec"
 
+	v6 "github.com/jahid90/just/cmd/do/config/justfile/v6"
 	"github.com/jahid90/just/lib"
 )
 
@@ -16,6 +17,7 @@ type Version struct {
 type Config struct {
 	just               *Just
 	justV5             *JustV5
+	justV6             *v6.Just
 	Version            string
 	Format             FormatFn
 	Convert            ConvertFn
@@ -48,8 +50,25 @@ func GetConfig(contents []byte) (*Config, error) {
 	c.Version = v.Version
 	c.just = nil
 	c.justV5 = nil
+	c.justV6 = nil
 
-	if v.Version == "5" {
+	if v.Version == "6" {
+
+		j := &v6.Just{}
+		err = parseAsJsonOrYaml(contents, j)
+		if err != nil {
+			return nil, err
+		}
+
+		c.justV6 = j
+		c.Format = j.Format
+		c.Convert = j.Convert
+		c.ShowListing = j.ShowListing
+		c.ShowShortListing = j.ShowShortListing
+		c.LookupAlias = j.LookupAlias
+		c.LookupDependencies = j.LookupDependencies
+
+	} else if v.Version == "5" {
 
 		j := &JustV5{}
 		err = parseAsJsonOrYaml(contents, j)
