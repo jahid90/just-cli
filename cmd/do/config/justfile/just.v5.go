@@ -112,7 +112,7 @@ func (j *JustV5) ShowShortListing() error {
 }
 
 // LookupAlias Returns the command corresponding to an alias
-func (j *JustV5) LookupAlias(alias string) (string, error) {
+func (j *JustV5) LookupAlias(alias string) (interface{}, error) {
 
 	// check if the alias is present in the config file
 	for _, cmd := range j.Commands {

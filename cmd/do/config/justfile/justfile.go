@@ -31,7 +31,7 @@ type ConvertFn func() ([]byte, error)
 type FormatFn func(format string) ([]byte, error)
 type ShowListingFn func() error
 type ShowShortListingFn func() error
-type LookupAliasFn func(alias string) (string, error)
+type LookupAliasFn func(alias string) (interface{}, error)
 type LookupDependenciesFn func(alias string) ([]string, error)
 
 // GeneratorFn A function to generate an exec.Cmd that can be run

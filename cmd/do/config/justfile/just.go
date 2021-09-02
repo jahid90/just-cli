@@ -80,7 +80,7 @@ func (j *Just) ShowShortListing() error {
 }
 
 // LookupAlias Returns the command corresponding to an alias
-func (j *Just) LookupAlias(alias string) (string, error) {
+func (j *Just) LookupAlias(alias string) (interface{}, error) {
 
 	// check if the alias is present in the config file
 	entry, ok := j.Commands[alias]

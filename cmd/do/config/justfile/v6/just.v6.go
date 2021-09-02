@@ -142,13 +142,13 @@ func (j *Just) ShowShortListing() error {
 }
 
 // LookupAlias Returns the command corresponding to an alias
-func (j *Just) LookupAlias(alias string) (string, error) {
+func (j *Just) LookupAlias(alias string) (interface{}, error) {
 
 	// check if the alias is present in the config file
 	for aka, cmd := range j.Commands {
 		if aka == alias {
 			// TODO - fix this
-			return cmd.Description, nil
+			return cmd, nil
 		}
 	}
 

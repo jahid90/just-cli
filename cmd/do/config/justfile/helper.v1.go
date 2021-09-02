@@ -1,17 +1,23 @@
 package justfile
 
 import (
+	"errors"
 	"os/exec"
 	"strings"
 
 	"github.com/jahid90/just/lib/command"
 )
 
-var CommandV1GeneratorFn = func(alias string, appendArgs []string, j *Config) ([]*exec.Cmd, error) {
+var CommandV1GeneratorFn = func(alias string, appendArgs []string, c *Config) ([]*exec.Cmd, error) {
 
-	entry, err := j.LookupAlias(alias)
+	aka, err := c.LookupAlias(alias)
 	if err != nil {
 		return nil, err
+	}
+
+	entry, ok := aka.(string)
+	if !ok {
+		return nil, errors.New("error: internal - unexpected type received")
 	}
 
 	// add any additional arguments provided
@@ -20,16 +26,16 @@ var CommandV1GeneratorFn = func(alias string, appendArgs []string, j *Config) ([
 	}
 
 	commandLine := strings.Split(entry, " ")
-	c := commandLine[0]
+	cmd := commandLine[0]
 	args := commandLine[1:]
 
-	err = command.Validate(c)
+	err = command.Validate(cmd)
 	if err != nil {
 		return nil, err
 	}
 
 	// generate the command; ignore any additional arguments supplied
-	cmd := exec.Command(c, args...)
+	cmdExec := exec.Command(cmd, args...)
 
-	return []*exec.Cmd{cmd}, nil
+	return []*exec.Cmd{cmdExec}, nil
 }

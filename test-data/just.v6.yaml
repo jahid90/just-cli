@@ -18,3 +18,13 @@ commands:
         env:
           - NODE_ENV=test
         run: yarn test
+  list:
+    description: Lists the contents of the current dir
+    needs:
+      - dep1
+      - dep2
+    steps:
+      - uses: action/action1@v2
+      - uses: action/action1@v2
+      - name: Invoke ls
+        run: ls

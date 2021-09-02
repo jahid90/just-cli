@@ -1,8 +1,8 @@
 package justfile
 
 import (
+	"errors"
 	"os/exec"
-	"strings"
 )
 
 var CommandV5GeneratorFn = func(alias string, appendArgs []string, c *Config) ([]*exec.Cmd, error) {
@@ -13,23 +13,28 @@ var CommandV5GeneratorFn = func(alias string, appendArgs []string, c *Config) ([
 	// TODO: handle transitive dependencies and cycles
 	deps, _ := c.LookupDependencies(alias)
 	for _, dep := range deps {
-		a, err := c.LookupAlias(dep)
+		aa, err := c.LookupAlias(dep)
 		if err != nil {
 			return nil, err
+		}
+
+		a, ok := aa.(string)
+		if !ok {
+			return nil, errors.New("error: internal - unexpected type received")
 		}
 
 		cmd := exec.Command("sh", "-c", a)
 		cmds = append(cmds, cmd)
 	}
 
-	entry, err := c.LookupAlias(alias)
+	aka, err := c.LookupAlias(alias)
 	if err != nil {
 		return nil, err
 	}
 
-	// add any additional arguments provided
-	if len(appendArgs) > 0 {
-		entry = entry + " " + strings.Join(appendArgs, " ")
+	entry, ok := aka.(string)
+	if !ok {
+		return nil, errors.New("error: internal - unexpected type received")
 	}
 
 	cmd := exec.Command("sh", "-c", entry)

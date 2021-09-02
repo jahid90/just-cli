@@ -1,15 +1,21 @@
 package justfile
 
 import (
+	"errors"
 	"os/exec"
 	"strings"
 )
 
-var CommandV4GeneratorFn = func(alias string, appendArgs []string, j *Config) ([]*exec.Cmd, error) {
+var CommandV4GeneratorFn = func(alias string, appendArgs []string, c *Config) ([]*exec.Cmd, error) {
 
-	entry, err := j.LookupAlias(alias)
+	aka, err := c.LookupAlias(alias)
 	if err != nil {
 		return nil, err
+	}
+
+	entry, ok := aka.(string)
+	if !ok {
+		return nil, errors.New("error: internal - unexpected type received")
 	}
 
 	// add any additional arguments provided
