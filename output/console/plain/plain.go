@@ -22,6 +22,16 @@ func Println(args ...interface{}) error {
 	return nil
 }
 
+func Printf(format string, args ...interface{}) error {
+	_, err := fmt.Printf(format, args...)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func Sprint(args ...interface{}) string {
 	out := fmt.Sprint(args...)
 
@@ -30,6 +40,12 @@ func Sprint(args ...interface{}) string {
 
 func Sprintln(args ...interface{}) string {
 	out := fmt.Sprintln(args...)
+
+	return out
+}
+
+func Sprintf(format string, args ...interface{}) string {
+	out := fmt.Sprintf(format, args...)
 
 	return out
 }
