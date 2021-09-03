@@ -83,12 +83,12 @@ func generateConfig(c *justfile.Config, fn justfile.GeneratorFn) (*Config, error
 		RunCmd: func(ctx *cli.Context) error {
 
 			alias := ctx.Args().First()
-			cmd, err := fn(alias, ctx.Args().Tail(), c)
+			cmds, err := fn(alias, ctx.Args().Tail(), c)
 			if err != nil {
 				return err
 			}
 
-			err = executor.Run(cmd)
+			err = executor.ExecuteMany(cmds)
 			if err != nil {
 				return err
 			}
