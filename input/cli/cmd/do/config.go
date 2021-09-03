@@ -87,7 +87,8 @@ func generateConfig(c *just.Config, configFile interface{}, fn just.GeneratorFn)
 		RunCmd: func(ctx *cli.Context) error {
 
 			alias := ctx.Args().First()
-			cmds, err := fn(alias, ctx.Args().Tail(), configFile)
+			args := ctx.Args().Tail()
+			cmds, err := fn(alias, args, configFile)
 			if err != nil {
 				return err
 			}

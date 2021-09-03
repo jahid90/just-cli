@@ -3,6 +3,9 @@ package text
 import (
 	"errors"
 	"io/ioutil"
+	"os"
+
+	"github.com/jahid90/just/core/logger"
 )
 
 // ReadFile Reads filename and returns its contents
@@ -13,4 +16,19 @@ func ReadFile(filename string) ([]byte, error) {
 	}
 
 	return contents, nil
+}
+
+func Exists(filename string) bool {
+	_, err := os.Stat(filename)
+	if err == nil {
+		return true
+	}
+
+	if os.IsNotExist(err) {
+		logger.Info("file does not exist")
+	} else {
+		logger.Error(err.Error())
+	}
+
+	return false
 }

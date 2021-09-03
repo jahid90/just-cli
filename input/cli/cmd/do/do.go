@@ -1,8 +1,11 @@
 package do
 
 import (
+	"errors"
 	"fmt"
 
+	"github.com/jahid90/just/core/file/text"
+	"github.com/jahid90/just/core/just"
 	"github.com/urfave/cli/v2"
 )
 
@@ -64,7 +67,28 @@ func Cmd() *cli.Command {
 			}
 
 			// run the command
-			err = config.RunCmd(c)
+			// err = config.RunCmd(c)
+			// if err != nil {
+			// 	return err
+			// }
+			var configFileName string
+			configFileName = c.String("config-file")
+			if len(configFileName) == 0 {
+				configFileName = "just.yaml"
+			}
+			if !text.Exists(configFileName) {
+				configFileName = "just.json"
+			}
+			if !text.Exists(configFileName) {
+				return errors.New("no config file was found")
+			}
+
+			api, err := just.GetApi(configFileName)
+			if err != nil {
+				return err
+			}
+
+			err = api.Execute(c.Args().First())
 			if err != nil {
 				return err
 			}
