@@ -4,13 +4,13 @@ import (
 	"errors"
 
 	"github.com/jahid90/just/core/command/executor"
-	"github.com/jahid90/just/core/justfile"
-	v1 "github.com/jahid90/just/core/justfile/v1"
-	v2 "github.com/jahid90/just/core/justfile/v2"
-	v3 "github.com/jahid90/just/core/justfile/v3"
-	v4 "github.com/jahid90/just/core/justfile/v4"
-	v5 "github.com/jahid90/just/core/justfile/v5"
-	v6 "github.com/jahid90/just/core/justfile/v6"
+	"github.com/jahid90/just/core/just"
+	v1 "github.com/jahid90/just/core/just/v1"
+	v2 "github.com/jahid90/just/core/just/v2"
+	v3 "github.com/jahid90/just/core/just/v3"
+	v4 "github.com/jahid90/just/core/just/v4"
+	v5 "github.com/jahid90/just/core/just/v5"
+	v6 "github.com/jahid90/just/core/just/v6"
 	"github.com/urfave/cli/v2"
 )
 
@@ -35,13 +35,13 @@ type Config struct {
 // Parse Parses the config file and generates a suitable Config
 func Parse(contents []byte) (*Config, error) {
 
-	c, err := justfile.GetConfig(contents)
+	c, err := just.GetConfig(contents)
 	if err != nil {
 		return nil, err
 	}
 
 	version := c.Version
-	var cmdGeneratorFn justfile.GeneratorFn
+	var cmdGeneratorFn just.GeneratorFn
 	var configFile interface{}
 
 	// we only allow the versions we know
@@ -82,7 +82,7 @@ func Parse(contents []byte) (*Config, error) {
 	return config, nil
 }
 
-func generateConfig(c *justfile.Config, configFile interface{}, fn justfile.GeneratorFn) (*Config, error) {
+func generateConfig(c *just.Config, configFile interface{}, fn just.GeneratorFn) (*Config, error) {
 	config := &Config{
 		RunCmd: func(ctx *cli.Context) error {
 
