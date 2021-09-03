@@ -1,14 +1,22 @@
-package justfile
+package v1
 
 import (
 	"errors"
 	"os/exec"
 	"strings"
+
+	"github.com/jahid90/just/core/logger"
 )
 
-var CommandV1GeneratorFn = func(alias string, appendArgs []string, c *Config) ([]*exec.Cmd, error) {
+var CommandGeneratorFn = func(alias string, appendArgs []string, config interface{}) ([]*exec.Cmd, error) {
 
-	aka, err := c.LookupAlias(alias)
+	j, ok := config.(*Just)
+	if !ok {
+		logger.Error("bad type; expected v1 Just")
+		return nil, errors.New("internal error")
+	}
+
+	aka, err := j.LookupAlias(alias)
 	if err != nil {
 		return nil, err
 	}

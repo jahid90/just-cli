@@ -1,4 +1,4 @@
-package justfile
+package v2
 
 import (
 	"errors"
@@ -7,12 +7,20 @@ import (
 	"os/exec"
 	"strings"
 
+	v1 "github.com/jahid90/just/core/justfile/v1"
+	"github.com/jahid90/just/core/logger"
 	"github.com/jahid90/just/core/misc"
 )
 
-var CommandV2GeneratorFn = func(alias string, appendArgs []string, c *Config) ([]*exec.Cmd, error) {
+var CommandGeneratorFn = func(alias string, appendArgs []string, config interface{}) ([]*exec.Cmd, error) {
 
-	aka, err := c.LookupAlias(alias)
+	j, ok := config.(*v1.Just)
+	if !ok {
+		logger.Error("bad type; expected v1 Just")
+		return nil, errors.New("internal error")
+	}
+
+	aka, err := j.LookupAlias(alias)
 	if err != nil {
 		return nil, err
 	}

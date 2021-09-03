@@ -1,8 +1,6 @@
 package justfile
 
 import (
-	"os/exec"
-
 	"github.com/jahid90/just/core/file/json"
 	"github.com/jahid90/just/core/file/yaml"
 	v1 "github.com/jahid90/just/core/justfile/v1"
@@ -18,9 +16,9 @@ type Version struct {
 
 // Config A type representing a generic just config
 type Config struct {
-	just               *v1.Just
-	justV5             *v5.Just
-	justV6             *v6.Just
+	JustV1             *v1.Just
+	JustV5             *v5.Just
+	JustV6             *v6.Just
 	Version            string
 	Format             FormatFn
 	Convert            ConvertFn
@@ -37,9 +35,6 @@ type ShowShortListingFn func() error
 type LookupAliasFn func(alias string) (interface{}, error)
 type LookupDependenciesFn func(alias string) ([]string, error)
 
-// GeneratorFn A function to generate an exec.Cmd that can be run
-type GeneratorFn func(string, []string, *Config) ([]*exec.Cmd, error)
-
 // GetParserFn Returns a parser function to parse the config file
 func GetConfig(contents []byte) (*Config, error) {
 
@@ -51,9 +46,9 @@ func GetConfig(contents []byte) (*Config, error) {
 
 	c := &Config{}
 	c.Version = v.Version
-	c.just = nil
-	c.justV5 = nil
-	c.justV6 = nil
+	c.JustV1 = nil
+	c.JustV5 = nil
+	c.JustV6 = nil
 
 	if v.Version == "6" {
 
@@ -63,7 +58,7 @@ func GetConfig(contents []byte) (*Config, error) {
 			return nil, err
 		}
 
-		c.justV6 = j
+		c.JustV6 = j
 		c.Format = j.Format
 		c.Convert = func() ([]byte, error) { return []byte(""), nil }
 		c.ShowListing = j.ShowListing
@@ -79,7 +74,7 @@ func GetConfig(contents []byte) (*Config, error) {
 			return nil, err
 		}
 
-		c.justV5 = j
+		c.JustV5 = j
 		c.Format = j.Format
 		c.Convert = func() ([]byte, error) { return []byte(""), nil }
 		c.ShowListing = j.ShowListing
@@ -95,7 +90,7 @@ func GetConfig(contents []byte) (*Config, error) {
 			return nil, err
 		}
 
-		c.just = j
+		c.JustV1 = j
 		c.Format = j.Format
 		c.Convert = func() ([]byte, error) { return []byte(""), nil }
 		c.ShowListing = j.ShowListing

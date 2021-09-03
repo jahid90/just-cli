@@ -1,10 +1,17 @@
-package config
+package do
 
 import (
 	"errors"
+	"os/exec"
 
 	"github.com/jahid90/just/core/command/executor"
 	"github.com/jahid90/just/core/justfile"
+	v1 "github.com/jahid90/just/core/justfile/v1"
+	v2 "github.com/jahid90/just/core/justfile/v2"
+	v3 "github.com/jahid90/just/core/justfile/v3"
+	v4 "github.com/jahid90/just/core/justfile/v4"
+	v5 "github.com/jahid90/just/core/justfile/v5"
+	v6 "github.com/jahid90/just/core/justfile/v6"
 	"github.com/urfave/cli/v2"
 )
 
@@ -30,7 +37,7 @@ type GetShortListingFunc func() error
 type FormatFunc func(format string) ([]byte, error)
 
 // GeneratorFn Function to generate the config
-type GeneratorFn func(c *justfile.Config) (*Config, error)
+type GeneratorFn func(alias string, appendArgs []string, config interface{}) ([]*exec.Cmd, error)
 
 // ConvertFn Function to convert configs between versions
 type ConvertFn func() ([]byte, error)
@@ -44,33 +51,40 @@ func Parse(contents []byte) (*Config, error) {
 	}
 
 	version := c.Version
-	var cmdGeneratorFn justfile.GeneratorFn
+	var cmdGeneratorFn GeneratorFn
+	var configFile interface{}
 
 	// we only allow the versions we know
 	switch version {
 	case "1":
-		cmdGeneratorFn = justfile.CommandV1GeneratorFn
+		cmdGeneratorFn = v1.CommandGeneratorFn
+		configFile = c.JustV1
 
 	case "2":
-		cmdGeneratorFn = justfile.CommandV2GeneratorFn
+		cmdGeneratorFn = v2.CommandGeneratorFn
+		configFile = c.JustV1
 
 	case "3":
-		cmdGeneratorFn = justfile.CommandV3GeneratorFn
+		cmdGeneratorFn = v3.CommandGeneratorFn
+		configFile = c.JustV1
 
 	case "4":
-		cmdGeneratorFn = justfile.CommandV4GeneratorFn
+		cmdGeneratorFn = v4.CommandGeneratorFn
+		configFile = c.JustV1
 
 	case "5":
-		cmdGeneratorFn = justfile.CommandV5GeneratorFn
+		cmdGeneratorFn = v5.CommandGeneratorFn
+		configFile = c.JustV5
 
 	case "6":
-		cmdGeneratorFn = justfile.CommandV6GeneratorFn
+		cmdGeneratorFn = v6.CommandGeneratorFn
+		configFile = c.JustV6
 
 	default:
 		return nil, errors.New("error: unknown version: " + version)
 	}
 
-	config, err := generateConfig(c, cmdGeneratorFn)
+	config, err := generateConfig(c, configFile, cmdGeneratorFn)
 	if err != nil {
 		return nil, err
 	}
@@ -78,12 +92,12 @@ func Parse(contents []byte) (*Config, error) {
 	return config, nil
 }
 
-func generateConfig(c *justfile.Config, fn justfile.GeneratorFn) (*Config, error) {
+func generateConfig(c *justfile.Config, configFile interface{}, fn GeneratorFn) (*Config, error) {
 	config := &Config{
 		RunCmd: func(ctx *cli.Context) error {
 
 			alias := ctx.Args().First()
-			cmds, err := fn(alias, ctx.Args().Tail(), c)
+			cmds, err := fn(alias, ctx.Args().Tail(), configFile)
 			if err != nil {
 				return err
 			}

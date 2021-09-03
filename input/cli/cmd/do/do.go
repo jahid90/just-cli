@@ -3,7 +3,6 @@ package do
 import (
 	"fmt"
 
-	"github.com/jahid90/just/input/cli/cmd/do/config"
 	"github.com/urfave/cli/v2"
 )
 
@@ -75,7 +74,7 @@ func Cmd() *cli.Command {
 	}
 }
 
-func handleFlags(c *cli.Context, config *config.Config) error {
+func handleFlags(c *cli.Context, config *Config) error {
 
 	// handle list flag
 	if c.Bool("list") {

@@ -2,18 +2,17 @@ package do
 
 import (
 	"github.com/jahid90/just/core/file/text"
-	"github.com/jahid90/just/input/cli/cmd/do/config"
 	"github.com/urfave/cli/v2"
 )
 
-func parseConfig(ctx *cli.Context) (*config.Config, error) {
+func parseConfig(ctx *cli.Context) (*Config, error) {
 
 	contents, err := readConfigFile(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	c, err := config.Parse(contents)
+	c, err := Parse(contents)
 	if err != nil {
 		return nil, err
 	}
