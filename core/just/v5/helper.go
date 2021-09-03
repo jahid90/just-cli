@@ -3,7 +3,6 @@ package v5
 import (
 	"errors"
 	"os/exec"
-	"strings"
 
 	"github.com/jahid90/just/core/command/executor"
 	"github.com/jahid90/just/core/command/generator"
@@ -106,7 +105,9 @@ func findCommandMatching(alias string, config *Just) (*Command, error) {
 
 func generateExecFrom(command *Command) *exec.Cmd {
 
-	split := strings.Split(command.Exec, " ")
+	var commandLine []string
+	commandLine = append(commandLine, "-c")
+	commandLine = append(commandLine, command.Exec)
 
-	return generator.Generate(nil, split[0], split[1:])
+	return generator.Generate(nil, "sh", commandLine)
 }

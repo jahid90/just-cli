@@ -121,9 +121,11 @@ func generateExecStepsFrom(command *Command) []*exec.Cmd {
 			continue
 		}
 
-		split := strings.Split(step.Run, " ")
+		var commandLine []string
+		commandLine = append(commandLine, "-c")
+		commandLine = append(commandLine, step.Run)
 
-		cmd := generator.Generate(step.Env, split[0], split[1:])
+		cmd := generator.Generate(step.Env, "sh", commandLine)
 		cmds = append(cmds, cmd)
 	}
 

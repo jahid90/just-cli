@@ -61,8 +61,11 @@ func GenerateApi(just *Just) *api.JustApi {
 			for cmdAlias, cmd := range just.Commands {
 				if cmdAlias == alias {
 
-					split := strings.Split(cmd, " ")
-					cmdExec := generator.Generate(nil, split[0], split[1:])
+					var commandLine []string
+					commandLine = append(commandLine, "-c")
+					commandLine = append(commandLine, cmd)
+
+					cmdExec := generator.Generate(nil, "sh", commandLine)
 
 					err := executor.Execute(cmdExec)
 					if err != nil {
