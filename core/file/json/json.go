@@ -3,9 +3,11 @@ package json
 import (
 	"encoding/json"
 	"errors"
+
+	"github.com/jahid90/just/core/file/text"
 )
 
-// ParseJson Parses data as json into container
+// ParseJson Parses json data into the container
 func ParseJson(data []byte, container interface{}) error {
 	err := json.Unmarshal(data, container)
 	if err != nil {
@@ -13,4 +15,14 @@ func ParseJson(data []byte, container interface{}) error {
 	}
 
 	return nil
+}
+
+// ParseJsonFromFile Parses a json file into the container
+func ParseJsonFromFile(filename string, container interface{}) error {
+	contents, err := text.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+
+	return ParseJson(contents, container)
 }
