@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/jahid90/just/core/command/executor"
-	"github.com/jahid90/just/input/cli/cmd/do/config/justfile"
+	"github.com/jahid90/just/core/justfile"
 	"github.com/urfave/cli/v2"
 )
 

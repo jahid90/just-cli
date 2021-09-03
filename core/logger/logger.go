@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/fatih/color"
-	"github.com/jahid90/just/config"
+	"github.com/jahid90/just/core/config"
 )
 
 type LoggerFunc func(args ...interface{}) error

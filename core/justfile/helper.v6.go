@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/jahid90/just/core/command/executor"
-	v6 "github.com/jahid90/just/input/cli/cmd/do/config/justfile/v6"
+	v6 "github.com/jahid90/just/core/justfile/v6"
 )
 
 var CommandV6GeneratorFn = func(alias string, appendArgs []string, c *Config) ([]*exec.Cmd, error) {

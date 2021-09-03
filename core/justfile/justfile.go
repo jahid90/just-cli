@@ -5,7 +5,7 @@ import (
 
 	"github.com/jahid90/just/core/file/json"
 	"github.com/jahid90/just/core/file/yaml"
-	v6 "github.com/jahid90/just/input/cli/cmd/do/config/justfile/v6"
+	v6 "github.com/jahid90/just/core/justfile/v6"
 )
 
 // Version A type representing the version of a just config file
