@@ -34,8 +34,16 @@ commands:
   test:v7:
     steps:
       - run: just --config-file test-data/just.v7.yaml --list
-
-
-
-
-
+  hello:
+    description: Says hello
+    steps:
+      - run: echo hello
+  multi:step:
+    description: Run a multi-step alias
+    needs:
+      - hello
+    steps:
+      - name: list dir contents
+        run: ls
+      - name: say bye
+        run: echo bye

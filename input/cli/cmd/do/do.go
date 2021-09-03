@@ -49,7 +49,7 @@ func Cmd() *cli.Command {
 			}
 
 			// get the config file name
-			configFile, err := getConfigFile(c)
+			configFile, err := getConfigFileName(c)
 			if err != nil {
 				return err
 			}
@@ -71,12 +71,7 @@ func Cmd() *cli.Command {
 				return nil
 			}
 
-			// run the command
-			// err = config.RunCmd(c)
-			// if err != nil {
-			// 	return err
-			// }
-
+			// run the command corresponding to the alias
 			err = api.Execute(c.Args().First())
 			if err != nil {
 				return err

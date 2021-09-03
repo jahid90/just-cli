@@ -77,14 +77,24 @@ func GenerateApi(config *Just) *api.JustApi {
 			}
 		},
 		Execute: func(alias string) error {
+
 			command, err := findCommandMatching(alias, config)
 			if err != nil {
 				return err
 			}
 			logger.Debugf("alias matched a command: %#v", command)
 
+			err = handleDepends(command.Needs, config)
+			if err != nil {
+				return err
+			}
+
+			logger.Info("executing steps")
+
 			cmds := generateExecStepsFrom(command)
 			executor.ExecuteMany(cmds)
+
+			logger.Info("executing steps completed")
 
 			return nil
 		},
@@ -94,6 +104,7 @@ func GenerateApi(config *Just) *api.JustApi {
 func findCommandMatching(alias string, config *Just) (*Command, error) {
 	for cmdAlias, cmd := range config.Commands {
 		if alias == cmdAlias {
+			logger.Debugf("found a command matching the alias: %#v", cmd)
 			return &cmd, nil
 		}
 	}
@@ -106,7 +117,7 @@ func generateExecStepsFrom(command *Command) []*exec.Cmd {
 
 	for _, step := range command.Steps {
 		if len(step.Uses) != 0 {
-			logger.Info("skipping step as it uses action")
+			logger.Debug("skipping step as it uses action")
 			continue
 		}
 
@@ -117,4 +128,31 @@ func generateExecStepsFrom(command *Command) []*exec.Cmd {
 	}
 
 	return cmds
+}
+
+func handleDepends(aliases []string, config *Just) error {
+
+	if len(aliases) == 0 {
+		logger.Debug("no needs, skipping")
+		return nil
+	}
+
+	logger.Info("executing needs")
+
+	for _, alias := range aliases {
+
+		logger.Debugf("executing need: %s", alias)
+
+		command, err := findCommandMatching(alias, config)
+		if err != nil {
+			return err
+		}
+
+		cmds := generateExecStepsFrom(command)
+		executor.ExecuteMany(cmds)
+	}
+
+	logger.Info("executing needs complete")
+
+	return nil
 }
