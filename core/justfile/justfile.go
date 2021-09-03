@@ -1,6 +1,8 @@
 package justfile
 
 import (
+	"os/exec"
+
 	"github.com/jahid90/just/core/file/json"
 	"github.com/jahid90/just/core/file/yaml"
 	v1 "github.com/jahid90/just/core/justfile/v1"
@@ -9,17 +11,19 @@ import (
 )
 
 // Version A type representing the version of a just config file
-// Is used to determine the appropriate container to unmarshall the config file into
 type Version struct {
 	Version string `json:"version" yaml:"version"`
 }
 
+// GeneratorFn Function to generate the config
+type GeneratorFn func(alias string, appendArgs []string, config interface{}) ([]*exec.Cmd, error)
+
 // Config A type representing a generic just config
 type Config struct {
+	Version            string
 	JustV1             *v1.Just
 	JustV5             *v5.Just
 	JustV6             *v6.Just
-	Version            string
 	Format             FormatFn
 	Convert            ConvertFn
 	ShowListing        ShowListingFn
