@@ -5,17 +5,22 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/jahid90/just/config"
-	"github.com/jahid90/just/output/console/colorize"
-	"github.com/jahid90/just/output/console/plain"
 )
+
+type LoggerFunc func(args ...interface{}) error
+type ColorizerFunc func(color color.Color, args ...interface{}) string
+
+// Injection points
+var Logger LoggerFunc = func(args ...interface{}) error { return nil }
+var Colorizer ColorizerFunc = func(color color.Color, args ...interface{}) string { return "" }
 
 func Debug(args ...interface{}) error {
 	if config.LogLevel <= config.DEBUG {
 		var printArgs = make([]interface{}, 0)
-		printArgs = append(printArgs, colorize.Sprint(*color.New(color.FgBlue), "[debug]"))
+		printArgs = append(printArgs, Colorizer(*color.New(color.FgBlue), "[debug]"))
 		printArgs = append(printArgs, args...)
 
-		err := plain.Println(printArgs...)
+		err := Logger(printArgs...)
 		if err != nil {
 			return err
 		}
@@ -27,10 +32,10 @@ func Debug(args ...interface{}) error {
 func Info(args ...interface{}) error {
 	if config.LogLevel <= config.INFO {
 		var printArgs = make([]interface{}, 0)
-		printArgs = append(printArgs, colorize.Sprint(*color.New(color.FgGreen), "[info]"))
+		printArgs = append(printArgs, Colorizer(*color.New(color.FgGreen), "[info]"))
 		printArgs = append(printArgs, args...)
 
-		err := plain.Println(printArgs...)
+		err := Logger(printArgs...)
 		if err != nil {
 			return err
 		}
@@ -43,10 +48,10 @@ func Info(args ...interface{}) error {
 func Warn(args ...interface{}) error {
 	if config.LogLevel <= config.WARN {
 		var printArgs = make([]interface{}, 0)
-		printArgs = append(printArgs, colorize.Sprint(*color.New(color.FgYellow), "[warn]"))
+		printArgs = append(printArgs, Colorizer(*color.New(color.FgYellow), "[warn]"))
 		printArgs = append(printArgs, args...)
 
-		err := plain.Println(printArgs...)
+		err := Logger(printArgs...)
 		if err != nil {
 			return err
 		}
@@ -59,10 +64,10 @@ func Warn(args ...interface{}) error {
 func Error(args ...interface{}) error {
 	if config.LogLevel <= config.ERROR {
 		var printArgs = make([]interface{}, 0)
-		printArgs = append(printArgs, colorize.Sprint(*color.New(color.FgRed), "[error]"))
+		printArgs = append(printArgs, Colorizer(*color.New(color.FgRed), "[error]"))
 		printArgs = append(printArgs, args...)
 
-		err := plain.Println(printArgs...)
+		err := Logger(printArgs...)
 		if err != nil {
 			return err
 		}
@@ -74,10 +79,10 @@ func Error(args ...interface{}) error {
 func Fatal(args ...interface{}) {
 	if config.LogLevel <= config.FATAL {
 		var printArgs = make([]interface{}, 0)
-		printArgs = append(printArgs, colorize.Sprint(*color.New(color.FgHiRed), "[fatal]"))
+		printArgs = append(printArgs, Colorizer(*color.New(color.FgHiRed), "[fatal]"))
 		printArgs = append(printArgs, args...)
 
-		plain.Println(printArgs...)
+		Logger(printArgs...)
 		os.Exit(1)
 	}
 }
