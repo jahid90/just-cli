@@ -21,6 +21,7 @@ func main() {
 	config.SetLogLevel(Environment)
 
 	if len(GitCommit) == 0 {
+		// needs to be atleast 7 characters as cli uses 7 chars as version
 		GitCommit = "commit unknown"
 	}
 
