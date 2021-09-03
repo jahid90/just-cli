@@ -1,4 +1,4 @@
-package justfile
+package v1
 
 import (
 	"encoding/json"
@@ -96,16 +96,16 @@ func (j *Just) LookupDependencies(alias string) ([]string, error) {
 	return nil, errors.New("error: not supported")
 }
 
-// Convert Converts config to v5
-func (j *Just) Convert() ([]byte, error) {
+// // Convert Converts config to v5
+// func (j *Just) Convert() ([]byte, error) {
 
-	v5 := &JustV5{}
-	v5.Version = "5"
-	v5.Commands = []CommandV5{}
+// 	v5 := &v5.Just{}
+// 	v5.Version = "5"
+// 	v5.Commands = []v5.Command{}
 
-	for alias, exec := range j.Commands {
-		v5.Commands = append(v5.Commands, CommandV5{Alias: alias, Exec: exec, Description: "", Depends: []string{}})
-	}
+// 	for alias, exec := range j.Commands {
+// 		v5.Commands = append(v5.Commands, v5.Command{Alias: alias, Exec: exec, Description: "", Depends: []string{}})
+// 	}
 
-	return yaml.Marshal(v5)
-}
+// 	return yaml.Marshal(v5)
+// }

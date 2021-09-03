@@ -5,6 +5,8 @@ import (
 
 	"github.com/jahid90/just/core/file/json"
 	"github.com/jahid90/just/core/file/yaml"
+	v1 "github.com/jahid90/just/core/justfile/v1"
+	v5 "github.com/jahid90/just/core/justfile/v5"
 	v6 "github.com/jahid90/just/core/justfile/v6"
 )
 
@@ -16,8 +18,8 @@ type Version struct {
 
 // Config A type representing a generic just config
 type Config struct {
-	just               *Just
-	justV5             *JustV5
+	just               *v1.Just
+	justV5             *v5.Just
 	justV6             *v6.Just
 	Version            string
 	Format             FormatFn
@@ -63,7 +65,7 @@ func GetConfig(contents []byte) (*Config, error) {
 
 		c.justV6 = j
 		c.Format = j.Format
-		c.Convert = j.Convert
+		c.Convert = func() ([]byte, error) { return []byte(""), nil }
 		c.ShowListing = j.ShowListing
 		c.ShowShortListing = j.ShowShortListing
 		c.LookupAlias = j.LookupAlias
@@ -71,7 +73,7 @@ func GetConfig(contents []byte) (*Config, error) {
 
 	} else if v.Version == "5" {
 
-		j := &JustV5{}
+		j := &v5.Just{}
 		err = parseAsJsonOrYaml(contents, j)
 		if err != nil {
 			return nil, err
@@ -79,7 +81,7 @@ func GetConfig(contents []byte) (*Config, error) {
 
 		c.justV5 = j
 		c.Format = j.Format
-		c.Convert = j.Convert
+		c.Convert = func() ([]byte, error) { return []byte(""), nil }
 		c.ShowListing = j.ShowListing
 		c.ShowShortListing = j.ShowShortListing
 		c.LookupAlias = j.LookupAlias
@@ -87,7 +89,7 @@ func GetConfig(contents []byte) (*Config, error) {
 
 	} else {
 
-		j := &Just{}
+		j := &v1.Just{}
 		err = parseAsJsonOrYaml(contents, j)
 		if err != nil {
 			return nil, err
@@ -95,7 +97,7 @@ func GetConfig(contents []byte) (*Config, error) {
 
 		c.just = j
 		c.Format = j.Format
-		c.Convert = j.Convert
+		c.Convert = func() ([]byte, error) { return []byte(""), nil }
 		c.ShowListing = j.ShowListing
 		c.ShowShortListing = j.ShowShortListing
 		c.LookupAlias = j.LookupAlias

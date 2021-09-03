@@ -1,4 +1,4 @@
-package justfile
+package v5
 
 import (
 	"encoding/json"
@@ -12,14 +12,14 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// JustV5 A type representing a v5 just config
-type JustV5 struct {
-	Version  string      `json:"version" yaml:"version"`
-	Commands []CommandV5 `json:"commands" yaml:"commands"`
+// Just A type representing a v5 just config
+type Just struct {
+	Version  string    `json:"version" yaml:"version"`
+	Commands []Command `json:"commands" yaml:"commands"`
 }
 
-// Command A type representing a command in a JustV5 struct
-type CommandV5 struct {
+// Command A type representing a command
+type Command struct {
 	Alias       string   `json:"alias" yaml:"alias"`
 	Exec        string   `json:"command" yaml:"command"`
 	Description string   `json:"description" yaml:"description"`
@@ -27,7 +27,7 @@ type CommandV5 struct {
 }
 
 // Format Formats the config file into the requested format
-func (j *JustV5) Format(format string) ([]byte, error) {
+func (j *Just) Format(format string) ([]byte, error) {
 	if format == "json" {
 		formatted, err := json.MarshalIndent(j, "", "  ")
 		if err != nil {
@@ -50,7 +50,7 @@ func (j *JustV5) Format(format string) ([]byte, error) {
 }
 
 // ShowListing Prints a list of the avaliable commands
-func (j *JustV5) ShowListing() error {
+func (j *Just) ShowListing() error {
 	if len(j.Commands) == 0 {
 		return errors.New("warn: no commands found in config")
 	}
@@ -77,7 +77,7 @@ func (j *JustV5) ShowListing() error {
 }
 
 // ShowShortListing Prints a table of the available commands
-func (j *JustV5) ShowShortListing() error {
+func (j *Just) ShowShortListing() error {
 
 	// we have to wrap every print in tabwriter as color basically
 	// adds color codes to the string to print them on the screen
@@ -112,7 +112,7 @@ func (j *JustV5) ShowShortListing() error {
 }
 
 // LookupAlias Returns the command corresponding to an alias
-func (j *JustV5) LookupAlias(alias string) (interface{}, error) {
+func (j *Just) LookupAlias(alias string) (interface{}, error) {
 
 	// check if the alias is present in the config file
 	for _, cmd := range j.Commands {
@@ -125,7 +125,7 @@ func (j *JustV5) LookupAlias(alias string) (interface{}, error) {
 }
 
 // LookupDependencies Returns the dependent aliases of an alias
-func (j *JustV5) LookupDependencies(alias string) ([]string, error) {
+func (j *Just) LookupDependencies(alias string) ([]string, error) {
 
 	for _, cmd := range j.Commands {
 		if cmd.Alias == alias {
@@ -136,16 +136,16 @@ func (j *JustV5) LookupDependencies(alias string) ([]string, error) {
 	return []string{}, nil
 }
 
-// Convert Converts config to v4
-func (j *JustV5) Convert() ([]byte, error) {
+// // Convert Converts config to v1-4
+// func (j *Just) Convert() ([]byte, error) {
 
-	v4 := &Just{}
-	v4.Version = "4"
-	v4.Commands = make(map[string]string)
+// 	v4 := &v1.Just{}
+// 	v4.Version = "4"
+// 	v4.Commands = make(map[string]string)
 
-	for _, cmd := range j.Commands {
-		v4.Commands[cmd.Alias] = cmd.Exec
-	}
+// 	for _, cmd := range j.Commands {
+// 		v4.Commands[cmd.Alias] = cmd.Exec
+// 	}
 
-	return yaml.Marshal(v4)
-}
+// 	return yaml.Marshal(v4)
+// }
