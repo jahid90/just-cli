@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"github.com/jahid90/just/core/command/executor"
+	"github.com/jahid90/just/core/file/text"
 	"github.com/jahid90/just/core/just"
 	v1 "github.com/jahid90/just/core/just/v1"
 	v2 "github.com/jahid90/just/core/just/v2"
@@ -11,6 +12,7 @@ import (
 	v4 "github.com/jahid90/just/core/just/v4"
 	v5 "github.com/jahid90/just/core/just/v5"
 	v6 "github.com/jahid90/just/core/just/v6"
+	"github.com/jahid90/just/core/logger"
 	"github.com/urfave/cli/v2"
 )
 
@@ -115,4 +117,30 @@ func generateConfig(c *just.Config, configFile interface{}, fn just.GeneratorFn)
 	}
 
 	return config, nil
+}
+
+func getConfigFile(ctx *cli.Context) (string, error) {
+	var configFileName string
+
+	configFileName = ctx.String("config-file")
+	if len(configFileName) != 0 {
+		return configFileName, nil
+	}
+
+	logger.Debug("no config-file flag provided; falling back to just.yaml")
+
+	configFileName = "just.yaml"
+	if text.Exists(configFileName) {
+		return configFileName, nil
+	}
+
+	logger.Debug("no just.yaml file found; falling back to just.json")
+
+	configFileName = "just.json"
+
+	if text.Exists(configFileName) {
+		return configFileName, nil
+	}
+
+	return "", errors.New("no config file was found")
 }

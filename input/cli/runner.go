@@ -10,7 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func Run() {
+func Run(gitVersion string) {
 
 	// Disable timestamps in log messages
 	log.SetFlags(log.Flags() &^ (log.Ldate | log.Ltime))
@@ -26,7 +26,7 @@ func Run() {
 		"\tTo list the available commands, run `just --list`\n" +
 		"\tTo execute a command, run `just <alias>`"
 
-	app.Version = "1.0.0"
+	app.Version = "1.0.0 - " + gitVersion[:7]
 	app.Flags = []cli.Flag{}
 	app.Commands = cmd.GetSubCommands()
 

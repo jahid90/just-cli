@@ -10,5 +10,12 @@ const (
 	FATAL
 )
 
-// Set to info by default; can be overridden
 var LogLevel LOG_LEVEL = DEBUG
+
+func SetLogLevel(environment string) {
+	if environment == "production" {
+		LogLevel = WARN
+	} else {
+		LogLevel = INFO
+	}
+}

@@ -1,11 +1,10 @@
 package do
 
 import (
-	"errors"
 	"fmt"
 
-	"github.com/jahid90/just/core/file/text"
 	"github.com/jahid90/just/core/just"
+	"github.com/jahid90/just/core/just/api"
 	"github.com/urfave/cli/v2"
 )
 
@@ -49,14 +48,20 @@ func Cmd() *cli.Command {
 				return nil
 			}
 
-			// parse the config
-			config, err := parseConfig(c)
+			// get the config file name
+			configFile, err := getConfigFile(c)
+			if err != nil {
+				return err
+			}
+
+			// get the api client
+			api, err := just.GetApi(configFile)
 			if err != nil {
 				return err
 			}
 
 			// handle flags
-			err = handleFlags(c, config)
+			err = handleFlags(c, api)
 			if err != nil {
 				return err
 			}
@@ -71,22 +76,6 @@ func Cmd() *cli.Command {
 			// if err != nil {
 			// 	return err
 			// }
-			var configFileName string
-			configFileName = c.String("config-file")
-			if len(configFileName) == 0 {
-				configFileName = "just.yaml"
-			}
-			if !text.Exists(configFileName) {
-				configFileName = "just.json"
-			}
-			if !text.Exists(configFileName) {
-				return errors.New("no config file was found")
-			}
-
-			api, err := just.GetApi(configFileName)
-			if err != nil {
-				return err
-			}
 
 			err = api.Execute(c.Args().First())
 			if err != nil {
@@ -98,12 +87,13 @@ func Cmd() *cli.Command {
 	}
 }
 
-func handleFlags(c *cli.Context, config *Config) error {
+func handleFlags(c *cli.Context, api *api.JustApi) error {
 
 	// handle list flag
 	if c.Bool("list") {
 
-		err := config.GetListing()
+		// doesn't return anything yet
+		_, err := api.ShowListing(false)
 		if err != nil {
 			return err
 		}
@@ -113,7 +103,7 @@ func handleFlags(c *cli.Context, config *Config) error {
 
 	// handle list short flag
 	if c.Bool("short") {
-		err := config.GetShortListing()
+		_, err := api.ShowListing(true)
 		if err != nil {
 			return err
 		}
@@ -124,7 +114,7 @@ func handleFlags(c *cli.Context, config *Config) error {
 	// handle output flag
 	if len(c.String("output")) != 0 {
 
-		formatted, err := config.Format(c.String("output"))
+		formatted, err := api.Format(c.String("output"))
 		if err != nil {
 			return err
 		}
@@ -134,16 +124,16 @@ func handleFlags(c *cli.Context, config *Config) error {
 		return nil
 	}
 
-	if c.Bool("convert") {
-		converted, err := config.Convert()
-		if err != nil {
-			return err
-		}
+	// if c.Bool("convert") {
+	// 	converted, err := api.Convert()
+	// 	if err != nil {
+	// 		return err
+	// 	}
 
-		fmt.Println(string(converted))
+	// 	fmt.Println(string(converted))
 
-		return nil
-	}
+	// 	return nil
+	// }
 
 	return nil
 }

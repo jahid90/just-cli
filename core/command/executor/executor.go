@@ -10,6 +10,11 @@ import (
 // ExecuteMany Executes a slice of commands; stops when any one fails
 func ExecuteMany(cmds []*exec.Cmd) error {
 
+	if len(cmds) == 0 {
+		logger.Warn("no commands passed")
+		return nil
+	}
+
 	for _, cmd := range cmds {
 		err := Execute(cmd)
 		if err != nil {

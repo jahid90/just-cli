@@ -1,26 +1,41 @@
-version: "5"
+version: 6
 commands:
-  - alias: build
-    command: go build
+  build:
     description: Build the cli
-  - alias: install
-    command: go install
+    steps:
+      - name: Build
+        run: go build
+  install:
     description: Install the cli globally
-  - alias: test:v1
-    command: just --config-file test-data/just.v1.json --list
-  - alias: test:v2
-    command: just --config-file test-data/just.v2.json --list
-  - alias: test:v3
-    command: just --config-file test-data/just.v3.json --list
-  - alias: test:v4
-    command: just --config-file test-data/just.v4.json --list
-  - alias: test:v5
-    command: just --config-file test-data/just.v5.yaml --list
-  - alias: test:v6
-    command: just --config-file test-data/just.v6.yaml --list
-  - alias: test:v7
-    command: just --config-file test-data/just.v7.yaml --list
-  - alias: longline
-    command: composer compose --in test-data/template.yaml --values test-data/values.yaml
-      --out test-data/generated.yaml --set variable1=value1 --set variable2=value2
+    steps:
+      - name: Install
+        env:
+          - COMMIT=abc
+          - ENV=production
+        run: go install -ldflags "-X main.GitCommit=$COMMIT -X main.Environment=$ENV"
+  test:v1:
+    steps:
+      - run: just --config-file test-data/just.v1.json --list
+  test:v2:
+    steps:
+      - run: just --config-file test-data/just.v2.json --list
+  test:v3:
+    steps:
+      - run: just --config-file test-data/just.v3.json --list
+  test:v4:
+    steps:
+      - run: just --config-file test-data/just.v4.json --list
+  test:v5:
+    steps:
+      - run: just --config-file test-data/just.v5.yaml --list
+  test:v6:
+    steps:
+      - run: just --config-file test-data/just.v6.yaml --list
+  test:v7:
+    steps:
+      - run: just --config-file test-data/just.v7.yaml --list
+
+
+
+
 
