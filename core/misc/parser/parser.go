@@ -3,7 +3,7 @@ package parser
 import (
 	"fmt"
 
-	"github.com/jahid90/just/config"
+	"github.com/jahid90/just/core/logger"
 	"github.com/jahid90/just/core/misc/lexer"
 )
 
@@ -26,9 +26,7 @@ func (p *Parser) find(tt lexer.TokenType) (int, bool) {
 		}
 
 		if token.Type == tt {
-			if config.DEBUG {
-				fmt.Println("Found " + tt.String() + " at pos: " + fmt.Sprint(i))
-			}
+			logger.Debug("Found " + tt.String() + " at pos: " + fmt.Sprint(i))
 			return i, true
 		}
 
@@ -39,10 +37,9 @@ func (p *Parser) find(tt lexer.TokenType) (int, bool) {
 // Parse Parses the tokens and generates an AST
 func (p *Parser) Parse() *CommandNode {
 
-	if config.DEBUG {
-		fmt.Println("== parse ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parse ==")
+	p.buffer.Print()
+	// debug end
 
 	if p.buffer.HasNext() == false {
 		return &CommandNode{
@@ -64,10 +61,9 @@ func (p *Parser) Parse() *CommandNode {
 
 func (p *Parser) parseCommand() (*CommandNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseCommand ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseCommand ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -127,10 +123,9 @@ func (p *Parser) parseBinaryOperator(tt lexer.TokenType) (*CommandNode, *Command
 
 func (p *Parser) parseAnd() (*AndCommandNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseAnd ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseAnd ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -146,10 +141,9 @@ func (p *Parser) parseAnd() (*AndCommandNode, *Parser) {
 
 func (p *Parser) parseOr() (*OrCommandNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseOr ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseOr ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -165,10 +159,9 @@ func (p *Parser) parseOr() (*OrCommandNode, *Parser) {
 
 func (p *Parser) parseCommandExpression() (*CommandExpressionNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseCommandExpression ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseCommandExpression ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -226,10 +219,9 @@ func (p *Parser) parseCommandExpression() (*CommandExpressionNode, *Parser) {
 
 func (p *Parser) parseEnv() (*EnvNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseEnv ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseEnv ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -242,10 +234,9 @@ func (p *Parser) parseEnv() (*EnvNode, *Parser) {
 
 func (p *Parser) parseMultiEnv() (*MultiEnvNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseMultiEnv ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseMultiEnv ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -266,10 +257,9 @@ func (p *Parser) parseMultiEnv() (*MultiEnvNode, *Parser) {
 
 func (p *Parser) parseKeyVal() (*KeyValNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseKeyVal ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseKeyVal ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -288,10 +278,9 @@ func (p *Parser) parseKeyVal() (*KeyValNode, *Parser) {
 
 func (p *Parser) parseEnvVal() (*EnvValNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseEnvVal ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseEnvVal ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -315,10 +304,9 @@ func (p *Parser) parseEnvVal() (*EnvValNode, *Parser) {
 
 func (p *Parser) parseExpression() (*CommandNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseExpression ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseExpression ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -342,10 +330,9 @@ func (p *Parser) parseExpression() (*CommandNode, *Parser) {
 
 func (p *Parser) parseExec() (*ExecNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseExec ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseExec ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -358,10 +345,9 @@ func (p *Parser) parseExec() (*ExecNode, *Parser) {
 
 func (p *Parser) parseArgs() (*ArgNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseArgs ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseArgs ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -374,10 +360,9 @@ func (p *Parser) parseArgs() (*ArgNode, *Parser) {
 
 func (p *Parser) parseMultiArg() (*MultiArgNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseMultiArg ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseMultiArg ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -461,10 +446,9 @@ func (p *Parser) parseMultiArg() (*MultiArgNode, *Parser) {
 
 func (p *Parser) parseIdent() (*IdentNode, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseIdent ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseIdent ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return nil, p
@@ -477,10 +461,9 @@ func (p *Parser) parseIdent() (*IdentNode, *Parser) {
 
 func (p *Parser) parseValue() (string, *Parser) {
 
-	if config.DEBUG {
-		fmt.Println("== parseValue ==")
-		p.buffer.Print()
-	}
+	logger.Debug("== parseValue ==")
+	p.buffer.Print()
+	// debug end
 
 	if !p.buffer.HasNext() {
 		return "nil", p

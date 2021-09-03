@@ -107,7 +107,7 @@ func (t *TokenBuffer) PeekN(n int) *Token {
 // Appends an EOF Token if its not the last token type
 func (t *TokenBuffer) TakeBetween(start int, end int) *TokenBuffer {
 
-	if config.DEBUG {
+	if config.LogLevel == config.DEBUG {
 		fmt.Println("Taking [" + fmt.Sprint(start) + ", " + fmt.Sprint(end) + ")")
 		fmt.Println("Current: " + fmt.Sprint(t.current) + ", Length: " + fmt.Sprint(t.length))
 	}
@@ -135,7 +135,7 @@ func (t *TokenBuffer) TakeBetween(start int, end int) *TokenBuffer {
 	if tb.tokens[tb.length-1].Type != EOF {
 		tb.appendEOFToken()
 	}
-	if config.DEBUG {
+	if config.LogLevel == config.DEBUG {
 		tb.Print()
 	}
 
