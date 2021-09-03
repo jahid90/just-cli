@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/jahid90/just/core/command/executor"
 	v6 "github.com/jahid90/just/core/justfile/v6"
 )
 
@@ -39,12 +38,6 @@ var CommandV6GeneratorFn = func(alias string, appendArgs []string, c *Config) ([
 
 		if len(step.Uses) > 0 {
 			fmt.Println("info: execute action: " + step.Uses)
-			continue
-		}
-
-		program := strings.Split(step.Run, " ")[0]
-		if err := executor.Validate(program); err != nil {
-			fmt.Println("warn: command not found - " + program)
 			continue
 		}
 

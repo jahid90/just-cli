@@ -4,8 +4,6 @@ import (
 	"errors"
 	"os/exec"
 	"strings"
-
-	"github.com/jahid90/just/core/command/executor"
 )
 
 var CommandV1GeneratorFn = func(alias string, appendArgs []string, c *Config) ([]*exec.Cmd, error) {
@@ -28,11 +26,6 @@ var CommandV1GeneratorFn = func(alias string, appendArgs []string, c *Config) ([
 	commandLine := strings.Split(entry, " ")
 	cmd := commandLine[0]
 	args := commandLine[1:]
-
-	err = executor.Validate(cmd)
-	if err != nil {
-		return nil, err
-	}
 
 	// generate the command; ignore any additional arguments supplied
 	cmdExec := exec.Command(cmd, args...)
