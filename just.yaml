@@ -9,7 +9,7 @@ commands:
     description: Install the cli globally
     steps:
       - name: Install
-        run: COMMIT=`git rev-list -1 HEAD`,ENV=production go install -ldflags "-X main.GitCommit=$COMMIT -X main.Environment=$ENV"
+        run: export COMMIT=$(git rev-list -1 HEAD) && export ENV=production && go install -ldflags "-X main.GitCommit=$COMMIT -X main.Environment=$ENV"
   test:v1:
     steps:
       - run: just --config-file test-data/just.v1.json --list
