@@ -71,6 +71,8 @@ func GenerateApi(just *Just) *api.JustApi {
 					if err != nil {
 						return err
 					}
+
+					return nil
 				}
 			}
 

@@ -25,7 +25,7 @@ func Exists(filename string) bool {
 	}
 
 	if os.IsNotExist(err) {
-		logger.Info("file does not exist")
+		logger.Debugf("%s: file does not exist", filename)
 	} else {
 		logger.Error(err.Error())
 	}
