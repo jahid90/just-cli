@@ -8,8 +8,8 @@ import (
 	"github.com/jahid90/just/output/console/plain"
 )
 
-var Environment string
-var GitCommit string
+var Environment string = "development"
+var GitCommit string = "devel  version"
 
 func main() {
 
@@ -19,11 +19,6 @@ func main() {
 	logger.Colorizer = colorize.Sprint
 
 	config.SetLogLevel(Environment)
-
-	if len(GitCommit) == 0 {
-		// needs to be atleast 7 characters as cli uses 7 chars as version
-		GitCommit = "commit unknown"
-	}
 
 	cli.Run(GitCommit)
 }
