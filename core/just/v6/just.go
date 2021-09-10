@@ -10,6 +10,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/jahid90/just/core/misc"
+	"github.com/jahid90/just/output/console/colorize"
 	"gopkg.in/yaml.v2"
 )
 
@@ -71,33 +72,32 @@ func (j *Just) ShowListing() error {
 	fmt.Println("Available commands are:")
 	fmt.Println()
 	for alias, cmd := range j.Commands {
-		color.Yellow("> " + alias)
+		colorize.Print(*color.New(color.FgYellow), "> "+alias)
 		if len(cmd.Description) != 0 {
-			fmt.Println()
-			fmt.Println(misc.Ellipsify("    "+cmd.Description, 80))
+			fmt.Println(misc.Ellipsify("  "+cmd.Description, 80))
 		}
 		if len(cmd.Needs) != 0 {
 			fmt.Println()
-			fmt.Println("    Depends On:")
+			fmt.Println("  Depends On:")
 			for _, dep := range cmd.Needs {
-				color.Yellow("      - " + dep)
+				color.Yellow("    - " + dep)
 			}
 		}
 		if len(cmd.Steps) != 0 {
 			fmt.Println()
-			fmt.Println("    Steps:")
+			fmt.Println("  Steps:")
 			for _, step := range cmd.Steps {
 				if len(step.Uses) != 0 {
-					fmt.Println("      - " + step.Uses)
+					fmt.Println("    - " + step.Uses)
 				} else {
-					fmt.Println("      - " + step.Name)
+					fmt.Println("    - " + step.Name)
 					if len(step.Env) != 0 {
-						fmt.Println("        Env:")
+						fmt.Println("      Env:")
 						for _, env := range step.Env {
-							fmt.Println("          - " + env)
+							fmt.Println("        - " + env)
 						}
 					}
-					fmt.Println("        Run: " + step.Run)
+					fmt.Println("      Run: " + step.Run)
 				}
 			}
 		}
@@ -129,8 +129,8 @@ func (j *Just) ShowShortListing() error {
 	fmt.Fprintln(w, strPrintWhite("Available commands are:"))
 	fmt.Fprintln(w)
 	// two blues to match coloring of alias
-	fmt.Fprintln(w, "  "+strPrintBlue("ALIAS")+"\t\t"+strPrintBlue("COMMAND"))
-	fmt.Fprintln(w, "  "+strPrintBlue("-----")+"\t\t"+strPrintBlue("-------"))
+	fmt.Fprintln(w, "  "+strPrintBlue("ALIAS")+"\t\t"+strPrintBlue("DESCRIPTION"))
+	fmt.Fprintln(w, "  "+strPrintBlue("-----")+"\t\t"+strPrintBlue("-----------"))
 	for alias, cmd := range j.Commands {
 		fmt.Fprintln(w, "  "+strPrintYellow(alias)+"\t\t"+strPrintWhite(misc.Ellipsify(cmd.Description, 60)))
 	}
