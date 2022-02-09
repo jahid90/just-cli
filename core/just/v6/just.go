@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 	"text/tabwriter"
 
 	"github.com/fatih/color"
@@ -170,4 +171,23 @@ func (j *Just) LookupDependencies(alias string) ([]string, error) {
 // Convert Converts config to v4
 func (j *Just) Convert() ([]byte, error) {
 	return nil, errors.New("warn: not supported")
+}
+
+// ShowCommand Returns the command(s) corresponding to an alias
+func (j *Just) ShowCommand(alias string) (string, error) {
+
+	for aka, cmd := range j.Commands {
+		if aka == alias {
+
+			var command []string
+			for _, step := range cmd.Steps {
+				command = append(command, step.Run)
+			}
+
+			return strings.Join(command, "\n"), nil
+		}
+	}
+
+	return "", errors.New("error: alias `" + alias + "` not found in the config file")
+
 }

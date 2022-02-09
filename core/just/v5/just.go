@@ -149,3 +149,16 @@ func (j *Just) LookupDependencies(alias string) ([]string, error) {
 
 // 	return yaml.Marshal(v4)
 // }
+
+// ShowCommand Returns the command corresponding to an alias
+func (j *Just) ShowCommand(alias string) (string, error) {
+
+	for _, cmd := range j.Commands {
+		if cmd.Alias == alias {
+			return cmd.Exec, nil
+		}
+	}
+
+	return "", errors.New("error: alias `" + alias + "` not found in the config file")
+
+}

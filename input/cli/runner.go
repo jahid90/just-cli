@@ -24,7 +24,10 @@ func Run(gitVersion string) {
 		"\n" +
 		"Usage examples:\n" +
 		"\tTo list the available commands, run `just --list`\n" +
-		"\tTo execute a command, run `just <alias>`"
+		"\tTo execute a command, run `just <alias>`" +
+		"\n" +
+		"\n" +
+		"If no sub-command is passed, `do` is inferred."
 
 	app.Version = "1.0.0 - " + gitVersion[:7]
 	app.Flags = []cli.Flag{}

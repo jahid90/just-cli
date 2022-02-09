@@ -76,5 +76,6 @@ func GenerateApi(just *Just) *api.JustApi {
 
 			return errors.New("no alias matched")
 		},
+		ShowCommand: just.ShowCommand,
 	}
 }

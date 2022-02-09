@@ -38,6 +38,10 @@ func Cmd() *cli.Command {
 				Name:  "convert",
 				Usage: "Convert config files between different versions",
 			},
+			&cli.StringFlag{
+				Name:  "command",
+				Usage: "Prints the command for a given alias",
+			},
 		},
 		Action: func(c *cli.Context) error {
 
@@ -129,6 +133,17 @@ func handleFlags(c *cli.Context, api *api.JustApi) error {
 
 	// 	return nil
 	// }
+
+	if len(c.String("command")) != 0 {
+		command, err := api.ShowCommand(c.String("command"))
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(command)
+
+		return nil
+	}
 
 	return nil
 }

@@ -87,6 +87,7 @@ func GenerateApi(config *Just) *api.JustApi {
 
 			return nil
 		},
+		ShowCommand: config.ShowCommand,
 	}
 }
 

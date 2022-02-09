@@ -15,4 +15,7 @@ type JustApi struct {
 
 	// Function to execute a provided alias
 	Execute func(string) error
+
+	// Function to show the command(s) corresponding to an alias
+	ShowCommand func(string) (string, error)
 }
