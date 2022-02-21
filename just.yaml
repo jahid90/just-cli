@@ -10,27 +10,23 @@ commands:
     steps:
       - name: Install
         run: export COMMIT=$(git rev-list -1 HEAD) && export ENV=production && go install -ldflags "-X main.GitCommit=$COMMIT -X main.Environment=$ENV"
-  test:v1:
+  tests:
+    description: Run all tests
     steps:
-      - run: just --config-file test-data/just.v1.json --list
-  test:v2:
-    steps:
-      - run: just --config-file test-data/just.v2.json --list
-  test:v3:
-    steps:
-      - run: just --config-file test-data/just.v3.json --list
-  test:v4:
-    steps:
-      - run: just --config-file test-data/just.v4.json --list
-  test:v5:
-    steps:
-      - run: just --config-file test-data/just.v5.yaml --list
-  test:v6:
-    steps:
-      - run: just --config-file test-data/just.v6.yaml --list
-  test:v7:
-    steps:
-      - run: just --config-file test-data/just.v7.yaml --list
+      - name: Run v1 test
+        run: just --config-file testdata/just.v1.json --list
+      - name: Run v2 test
+        run: just --config-file testdata/just.v2.json --list
+      - name: Run v3 test
+        run: just --config-file testdata/just.v3.json --list
+      - name: Run v4 test
+        run: just --config-file testdata/just.v4.json --list
+      - name: Run v5 test
+        run: just --config-file testdata/just.v5.yaml --list
+      - name: Run v6 test
+        run: just --config-file testdata/just.v6.yaml --list
+      - name: Run v7 test
+        run: just --config-file testdata/just.v7.yaml --list
   hello:
     description: Says hello
     steps:
