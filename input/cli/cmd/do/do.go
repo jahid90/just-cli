@@ -42,6 +42,10 @@ func Cmd() *cli.Command {
 				Name:  "command",
 				Usage: "Prints the command for a given alias",
 			},
+			&cli.StringSliceFlag{
+				Name:  "vars",
+				Usage: "Uses provided vars to interpolate into runs",
+			},
 		},
 		Action: func(c *cli.Context) error {
 
@@ -75,6 +79,7 @@ func Cmd() *cli.Command {
 				return nil
 			}
 
+			// TODO pass vars passed in cli to execute
 			// run the command corresponding to the alias
 			err = api.Execute(c.Args().First())
 			if err != nil {

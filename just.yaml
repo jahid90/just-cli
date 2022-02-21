@@ -1,4 +1,9 @@
 version: 6
+variables:
+  CommitExpression: $(git rev-list -1 HEAD)
+  Environment: production
+  Name: hobbit
+  Place: middle earth
 commands:
   build:
     description: Build the cli
@@ -9,7 +14,7 @@ commands:
     description: Install the cli globally
     steps:
       - name: Install
-        run: export COMMIT=$(git rev-list -1 HEAD) && export ENV=production && go install -ldflags "-X main.GitCommit=$COMMIT -X main.Environment=$ENV"
+        run: COMMIT={{ .CommitExpression }} && ENV={{ .Environment }} && go install -ldflags "-X main.GitCommit=$COMMIT -X main.Environment=$ENV"
   tests:
     description: Run all tests
     steps:
@@ -30,13 +35,13 @@ commands:
   hello:
     description: Says hello
     steps:
-      - run: echo hello
+      - run: echo hello {{ .Name }} of {{ .Place }}
   multi:step:
     description: Run a multi-step alias
     needs:
       - hello
     steps:
-      - name: list dir contents
+      - name: List dir contents
         run: ls
-      - name: say bye
+      - name: Say bye
         run: echo bye

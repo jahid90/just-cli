@@ -16,8 +16,9 @@ import (
 
 // Just A type representing a v6 just config
 type Just struct {
-	Version  string             `json:"version"`
-	Commands map[string]Command `json:"commands"`
+	Version   string             `json:"version"`
+	Variables map[string]string  `json:"variables"`
+	Commands  map[string]Command `json:"commands"`
 }
 
 // Command A type representing a command

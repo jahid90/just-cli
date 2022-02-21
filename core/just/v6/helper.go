@@ -1,9 +1,13 @@
 package v6
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
 	"os/exec"
+	"regexp"
 	"strings"
+	"text/template"
 
 	"github.com/jahid90/just/core/command/executor"
 	"github.com/jahid90/just/core/command/generator"
@@ -91,7 +95,11 @@ func GenerateApi(config *Just) *api.JustApi {
 
 			logger.Info("executing steps")
 
-			cmds := generateExecStepsFrom(command)
+			cmds, err := generateExecStepsFrom(command, config)
+			if err != nil {
+				return err
+			}
+
 			executor.ExecuteMany(cmds)
 
 			logger.Info("executing steps completed")
@@ -113,24 +121,29 @@ func findCommandMatching(alias string, config *Just) (*Command, error) {
 	return nil, errors.New("no alias matched")
 }
 
-func generateExecStepsFrom(command *Command) []*exec.Cmd {
+func generateExecStepsFrom(command *Command, config *Just) ([]*exec.Cmd, error) {
 	cmds := []*exec.Cmd{}
 
 	for _, step := range command.Steps {
 		if len(step.Uses) != 0 {
-			logger.Debug("skipping step as it uses action")
+			logger.Debug("not currently supported; skipping step as it uses an action")
 			continue
+		}
+
+		interpolatedRun, err := interpolateVars(step.Run, config.Variables)
+		if err != nil {
+			return nil, err
 		}
 
 		var commandLine []string
 		commandLine = append(commandLine, "-c")
-		commandLine = append(commandLine, step.Run)
+		commandLine = append(commandLine, interpolatedRun)
 
 		cmd := generator.Generate(step.Env, "sh", commandLine)
 		cmds = append(cmds, cmd)
 	}
 
-	return cmds
+	return cmds, nil
 }
 
 func handleDepends(aliases []string, config *Just) error {
@@ -151,11 +164,39 @@ func handleDepends(aliases []string, config *Just) error {
 			return err
 		}
 
-		cmds := generateExecStepsFrom(command)
+		cmds, err := generateExecStepsFrom(command, config)
+		if err != nil {
+			return err
+		}
+
 		executor.ExecuteMany(cmds)
 	}
 
 	logger.Info("executing needs complete")
 
 	return nil
+}
+
+func interpolateVars(run string, vars map[string]string) (string, error) {
+
+	logger.Debugf("Interpolating: %s", run)
+
+	tmpl, err := template.New("run-" + run).Option("missingkey=error").Parse(run)
+	if err != nil {
+		return "", err
+	}
+
+	var buffer bytes.Buffer
+	if err := tmpl.Execute(&buffer, vars); err != nil {
+
+		missingKeyRe := regexp.MustCompile(`at <(.*)>`)
+
+		if missingKeyRe.MatchString(err.Error()) {
+			return "", fmt.Errorf("unknown variable: %s while executing: %s", missingKeyRe.FindStringSubmatch(err.Error())[1], run)
+		} else {
+			return "", err
+		}
+	}
+
+	return buffer.String(), nil
 }
