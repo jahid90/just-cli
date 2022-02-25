@@ -126,7 +126,7 @@ func generateExecStepsFrom(command *Command, config *Just) ([]*exec.Cmd, error) 
 
 	for _, step := range command.Steps {
 		if len(step.Uses) != 0 {
-			logger.Debug("not currently supported; skipping step as it uses an action")
+			logger.Warn("warning: `uses` not currently supported; skipping step: " + step.Name)
 			continue
 		}
 
