@@ -10,7 +10,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/jahid90/just/core/misc"
-	"github.com/jahid90/just/output/console/colorize"
 	"gopkg.in/yaml.v2"
 )
 
@@ -73,7 +72,7 @@ func (j *Just) ShowListing() error {
 	fmt.Println("Available commands are:")
 	fmt.Println()
 	for alias, cmd := range j.Commands {
-		colorize.Print(*color.New(color.FgYellow), "> "+alias)
+		color.Yellow("> " + alias)
 		if len(cmd.Description) != 0 {
 			fmt.Println(misc.Ellipsify("  "+cmd.Description, 80))
 		}

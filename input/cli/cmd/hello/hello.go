@@ -1,9 +1,9 @@
 package hello
 
 import (
+	"fmt"
 	"os"
 
-	"github.com/jahid90/just/core/logger"
 	"github.com/urfave/cli/v2"
 )
 
@@ -16,9 +16,9 @@ func Cmd() *cli.Command {
 			user, ok := os.LookupEnv("USER")
 
 			if !ok {
-				logger.Info("Hello Stranger!")
+				fmt.Println("Hello Stranger!")
 			} else {
-				logger.Infof("Hello, %s!", user)
+				fmt.Printf("Hello, %s!\n", user)
 			}
 
 			return nil
