@@ -134,7 +134,7 @@ func (t *TokenBuffer) TakeBetween(start int, end int) *TokenBuffer {
 	if tb.tokens[tb.length-1].Type != EOF {
 		tb.appendEOFToken()
 	}
-	if config.LogLevel == config.DEBUG {
+	if config.AppLogLevel == config.DEBUG {
 		tb.Print()
 	}
 

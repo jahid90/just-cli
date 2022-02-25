@@ -1,21 +1,32 @@
 package config
 
-type LOG_LEVEL int
+type LogLevel int
 
 const (
-	DEBUG LOG_LEVEL = iota
+	DEBUG LogLevel = iota
 	INFO
 	WARN
 	ERROR
 	FATAL
 )
 
-var LogLevel LOG_LEVEL = DEBUG
+var AppLogLevel LogLevel = WARN
 
-func SetLogLevel(environment string) {
-	if environment == "production" {
-		LogLevel = WARN
-	} else {
-		LogLevel = INFO
+func SetLogLevel(logLevel string) {
+
+	switch logLevel {
+	case "DEBUG":
+		AppLogLevel = DEBUG
+	case "INFO":
+		AppLogLevel = INFO
+	case "WARN":
+		AppLogLevel = WARN
+	case "ERROR":
+		AppLogLevel = ERROR
+	case "FATAL":
+		AppLogLevel = FATAL
+	default:
+		AppLogLevel = WARN
 	}
+
 }

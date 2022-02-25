@@ -29,7 +29,7 @@ func Run(gitVersion string) {
 		"\n" +
 		"If no sub-command is passed, `do` is inferred."
 
-	app.Version = "1.0.0 - " + gitVersion[:7]
+	app.Version = "1.0.0 - " + gitVersion
 	app.Flags = []cli.Flag{}
 	app.Commands = cmd.GetSubCommands()
 

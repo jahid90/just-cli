@@ -1,7 +1,7 @@
 version: 6
 variables:
-  CommitExpression: $(git rev-list -1 HEAD)
-  Environment: production
+  Commit: $(git rev-list -1 HEAD)
+  LogLevel: INFO
   Name: hobbit
   Place: middle earth
 commands:
@@ -14,7 +14,7 @@ commands:
     description: Install the cli globally
     steps:
       - name: Install
-        run: COMMIT={{ .CommitExpression }} && ENV={{ .Environment }} && go install -ldflags "-X main.GitCommit=$COMMIT -X main.Environment=$ENV"
+        run: COMMIT={{ .Commit }} && LOG_LEVEL={{ .LogLevel }} && go install -ldflags "-X main.GitCommit=$COMMIT -X main.LogLevel=$LOG_LEVEL"
   tests:
     description: Run all tests
     steps:

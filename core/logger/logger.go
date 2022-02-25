@@ -17,7 +17,7 @@ var Formatter FormatterFunc = func(format string, args ...interface{}) string { 
 var Colorizer ColorizerFunc = func(color color.Color, args ...interface{}) string { return "" }
 
 func Debug(args ...interface{}) error {
-	if config.LogLevel <= config.DEBUG {
+	if config.AppLogLevel <= config.DEBUG {
 		var printArgs = make([]interface{}, 0)
 		printArgs = append(printArgs, Colorizer(*color.New(color.FgBlue), "[debug]"))
 		printArgs = append(printArgs, args...)
@@ -32,7 +32,7 @@ func Debug(args ...interface{}) error {
 }
 
 func Info(args ...interface{}) error {
-	if config.LogLevel <= config.INFO {
+	if config.AppLogLevel <= config.INFO {
 		var printArgs = make([]interface{}, 0)
 		printArgs = append(printArgs, Colorizer(*color.New(color.FgGreen), "[info]"))
 		printArgs = append(printArgs, args...)
@@ -48,7 +48,7 @@ func Info(args ...interface{}) error {
 }
 
 func Warn(args ...interface{}) error {
-	if config.LogLevel <= config.WARN {
+	if config.AppLogLevel <= config.WARN {
 		var printArgs = make([]interface{}, 0)
 		printArgs = append(printArgs, Colorizer(*color.New(color.FgYellow), "[warn]"))
 		printArgs = append(printArgs, args...)
@@ -64,7 +64,7 @@ func Warn(args ...interface{}) error {
 }
 
 func Error(args ...interface{}) error {
-	if config.LogLevel <= config.ERROR {
+	if config.AppLogLevel <= config.ERROR {
 		var printArgs = make([]interface{}, 0)
 		printArgs = append(printArgs, Colorizer(*color.New(color.FgRed), "[error]"))
 		printArgs = append(printArgs, args...)
@@ -79,7 +79,7 @@ func Error(args ...interface{}) error {
 }
 
 func Fatal(args ...interface{}) {
-	if config.LogLevel <= config.FATAL {
+	if config.AppLogLevel <= config.FATAL {
 		var printArgs = make([]interface{}, 0)
 		printArgs = append(printArgs, Colorizer(*color.New(color.FgHiRed), "[fatal]"))
 		printArgs = append(printArgs, args...)
@@ -90,35 +90,35 @@ func Fatal(args ...interface{}) {
 }
 
 func Debugf(format string, args ...interface{}) {
-	if config.LogLevel <= config.DEBUG {
+	if config.AppLogLevel <= config.DEBUG {
 		formatted := Formatter(format, args...)
 		Debug(formatted)
 	}
 }
 
 func Infof(format string, args ...interface{}) {
-	if config.LogLevel <= config.INFO {
+	if config.AppLogLevel <= config.INFO {
 		formatted := Formatter(format, args...)
 		Info(formatted)
 	}
 }
 
 func Warnf(format string, args ...interface{}) {
-	if config.LogLevel <= config.WARN {
+	if config.AppLogLevel <= config.WARN {
 		formatted := Formatter(format, args...)
 		Warn(formatted)
 	}
 }
 
 func Errorf(format string, args ...interface{}) {
-	if config.LogLevel <= config.ERROR {
+	if config.AppLogLevel <= config.ERROR {
 		formatted := Formatter(format, args...)
 		Error(formatted)
 	}
 }
 
 func Fatalf(format string, args ...interface{}) {
-	if config.LogLevel <= config.FATAL {
+	if config.AppLogLevel <= config.FATAL {
 		formatted := Formatter(format, args...)
 		Fatal(formatted)
 	}

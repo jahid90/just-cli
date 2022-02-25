@@ -9,8 +9,8 @@ import (
 	"github.com/jahid90/just/output/console"
 )
 
-var Environment string = "development"
-var GitCommit string = "devel  version"
+var LogLevel string = "DEBUG"
+var GitCommit string = "development"
 
 func main() {
 
@@ -22,7 +22,7 @@ func main() {
 	logger.Formatter = plainConsole.Sprintf
 	logger.Colorizer = coloredConsole.Sprint
 
-	config.SetLogLevel(Environment)
+	config.SetLogLevel(LogLevel)
 
 	cli.Run(GitCommit)
 }
