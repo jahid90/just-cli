@@ -42,7 +42,7 @@ func (e *Executor) Execute() error {
 	for _, unit := range e.units {
 		if err := unit.execute(); err != nil {
 			if e.ctx.skipUnitFailures {
-				logger.Error(err.Error())
+				logger.Error("step failed:", err.Error())
 			} else {
 				return err
 			}

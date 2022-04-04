@@ -46,6 +46,11 @@ func Cmd() *cli.Command {
 				Name:  "vars",
 				Usage: "Uses provided vars to interpolate into runs",
 			},
+			&cli.BoolFlag{
+				Name:    "skip-failures",
+				Aliases: []string{"k"},
+				Usage:   "Keep going even if some steps fail",
+			},
 		},
 		Action: func(c *cli.Context) error {
 
@@ -63,7 +68,8 @@ func Cmd() *cli.Command {
 			}
 
 			// get the api client
-			api, err := just.GetApi(configFile)
+			ctx := generateContext(c)
+			api, err := just.GetApi(configFile, ctx)
 			if err != nil {
 				return err
 			}
@@ -89,6 +95,16 @@ func Cmd() *cli.Command {
 			return nil
 		},
 	}
+}
+
+func generateContext(c *cli.Context) *api.Context {
+	ctx := api.NewApiContext()
+
+	if c.Bool("skip-failures") {
+		ctx.EnableSkipFailures()
+	}
+
+	return ctx
 }
 
 func handleFlags(c *cli.Context, api *api.JustApi) error {

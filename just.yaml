@@ -43,5 +43,7 @@ commands:
     steps:
       - name: List dir contents
         run: ls
+      - name: Fail step
+        run: false
       - name: Say bye
         run: echo bye

@@ -67,8 +67,9 @@ var CommandGeneratorFn = func(alias string, appendArgs []string, jj interface{})
 	return cmds, nil
 }
 
-func GenerateApi(config *Just) *api.JustApi {
+func GenerateApi(config *Just, ctx *api.Context) *api.JustApi {
 	return &api.JustApi{
+		Ctx:     ctx,
 		Version: func() string { return config.Version },
 		Format:  config.Format,
 		ShowListing: func(showShortListing bool) ([]byte, error) {
@@ -100,7 +101,12 @@ func GenerateApi(config *Just) *api.JustApi {
 
 			logger.Info("executing steps")
 
-			e := executor.NewExecutor(execUnits)
+			var e *executor.Executor
+			if ctx.KeepGoing {
+				e = executor.NewSkipFailuresExecutor(execUnits)
+			} else {
+				e = executor.NewExecutor(execUnits)
+			}
 			e.Execute()
 
 			logger.Info("executing steps completed")

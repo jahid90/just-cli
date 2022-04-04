@@ -26,7 +26,11 @@ type Version struct {
 // GeneratorFn Function to generate the config
 type GeneratorFn func(alias string, appendArgs []string, config interface{}) ([]*exec.Cmd, error)
 
-func GetApi(filename string) (*api.JustApi, error) {
+func GetApiContext() *api.Context {
+	return &api.Context{}
+}
+
+func GetApi(filename string, ctx *api.Context) (*api.JustApi, error) {
 	ver := &Version{}
 
 	err := parseFileContents(filename, ver)
@@ -83,7 +87,7 @@ func GetApi(filename string) (*api.JustApi, error) {
 		if err != nil {
 			return nil, err
 		}
-		return v6.GenerateApi(just), nil
+		return v6.GenerateApi(just, ctx), nil
 
 	default:
 		return nil, errors.New("unsupported version: " + ver.Version)
