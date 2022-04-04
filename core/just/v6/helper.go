@@ -100,7 +100,8 @@ func GenerateApi(config *Just) *api.JustApi {
 
 			logger.Info("executing steps")
 
-			executor.ExecuteMany(execUnits)
+			e := executor.NewExecutor(execUnits)
+			e.Execute()
 
 			logger.Info("executing steps completed")
 
@@ -175,7 +176,8 @@ func handleDepends(aliases []string, config *Just) error {
 			return err
 		}
 
-		executor.ExecuteMany(execUnits)
+		e := executor.NewExecutor(execUnits)
+		e.Execute()
 	}
 
 	logger.Info("executing needs completed")

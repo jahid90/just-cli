@@ -82,8 +82,12 @@ func GenerateApi(config *Just) *api.JustApi {
 			}
 			logger.Debugf("alias matched a command: %#v", command)
 
-			cmd := generateExecFrom(command)
-			executor.Execute(cmd)
+			unit := generateExecFrom(command)
+			e := executor.NewExecutor([]*executor.ExecutionUnit{unit})
+
+			if err := e.Execute(); err != nil {
+				return err
+			}
 
 			return nil
 		},
