@@ -104,11 +104,12 @@ func findCommandMatching(alias string, config *Just) (*Command, error) {
 	return nil, errors.New("no such alias is defined in config")
 }
 
-func generateExecFrom(command *Command) *exec.Cmd {
+func generateExecFrom(command *Command) *executor.ExecutionUnit {
 
 	var commandLine []string
 	commandLine = append(commandLine, "-c")
 	commandLine = append(commandLine, command.Exec)
 
-	return generator.Generate(nil, "sh", commandLine)
+	cmd := generator.Generate(nil, "sh", commandLine)
+	return executor.NewExecutionUnit(cmd, "")
 }

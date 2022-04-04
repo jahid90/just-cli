@@ -66,8 +66,9 @@ func GenerateApi(just *Just) *api.JustApi {
 					commandLine = append(commandLine, cmd)
 
 					cmdExec := generator.Generate(nil, "sh", commandLine)
+					execUnit := executor.NewExecutionUnit(cmdExec, "")
 
-					err := executor.Execute(cmdExec)
+					err := executor.Execute(execUnit)
 					if err != nil {
 						return err
 					}

@@ -1,24 +1,23 @@
 package executor
 
 import (
-	"os/exec"
 	"time"
 
 	"github.com/jahid90/just/core/logger"
 )
 
-// ExecuteMany Executes a slice of commands; stops when any one fails
-func ExecuteMany(cmds []*exec.Cmd) error {
+// ExecuteManyUnits Executes a slice of execution units; stops when any one fails
+func ExecuteMany(units []*ExecutionUnit) error {
 
-	if len(cmds) == 0 {
-		logger.Warn("no commands passed")
+	if len(units) == 0 {
+		logger.Warn("no units passed")
 		return nil
 	}
 
 	start := time.Now()
 
-	for _, cmd := range cmds {
-		err := execute(cmd)
+	for _, unit := range units {
+		err := unit.execute()
 		if err != nil {
 			return err
 		}
@@ -30,30 +29,18 @@ func ExecuteMany(cmds []*exec.Cmd) error {
 	return nil
 }
 
-// Execute Runs a command
-func Execute(cmd *exec.Cmd) error {
+// Execute Runs an execution unit
+func Execute(unit *ExecutionUnit) error {
 
 	start := time.Now()
 
-	err := execute(cmd)
+	err := unit.execute()
 	if err != nil {
 		return err
 	}
 
 	end := time.Now()
 	logger.Infof("took %s", end.Sub(start).String())
-
-	return nil
-}
-
-func execute(cmd *exec.Cmd) error {
-	logger.Infof("executing %s", cmd.String())
-
-	// start the command and await termination
-	err := cmd.Run()
-	if err != nil {
-		return err
-	}
 
 	return nil
 }

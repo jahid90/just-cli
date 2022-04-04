@@ -93,14 +93,14 @@ func GenerateApi(config *Just) *api.JustApi {
 				return err
 			}
 
-			logger.Info("executing steps")
-
-			cmds, err := generateExecStepsFrom(command, config)
+			execUnits, err := generateExecUnitsFrom(command, config)
 			if err != nil {
 				return err
 			}
 
-			executor.ExecuteMany(cmds)
+			logger.Info("executing steps")
+
+			executor.ExecuteMany(execUnits)
 
 			logger.Info("executing steps completed")
 
@@ -121,8 +121,8 @@ func findCommandMatching(alias string, config *Just) (*Command, error) {
 	return nil, errors.New("no alias matched")
 }
 
-func generateExecStepsFrom(command *Command, config *Just) ([]*exec.Cmd, error) {
-	cmds := []*exec.Cmd{}
+func generateExecUnitsFrom(command *Command, config *Just) ([]*executor.ExecutionUnit, error) {
+	units := []*executor.ExecutionUnit{}
 
 	for _, step := range command.Steps {
 		if len(step.Uses) != 0 {
@@ -140,10 +140,16 @@ func generateExecStepsFrom(command *Command, config *Just) ([]*exec.Cmd, error) 
 		commandLine = append(commandLine, interpolatedRun)
 
 		cmd := generator.Generate(step.Env, "sh", commandLine)
-		cmds = append(cmds, cmd)
+
+		desc := ""
+		if step.Name != "" {
+			desc = "step: " + step.Name
+		}
+
+		units = append(units, executor.NewExecutionUnit(cmd, desc))
 	}
 
-	return cmds, nil
+	return units, nil
 }
 
 func handleDepends(aliases []string, config *Just) error {
@@ -164,15 +170,15 @@ func handleDepends(aliases []string, config *Just) error {
 			return err
 		}
 
-		cmds, err := generateExecStepsFrom(command, config)
+		execUnits, err := generateExecUnitsFrom(command, config)
 		if err != nil {
 			return err
 		}
 
-		executor.ExecuteMany(cmds)
+		executor.ExecuteMany(execUnits)
 	}
 
-	logger.Info("executing needs complete")
+	logger.Info("executing needs completed")
 
 	return nil
 }

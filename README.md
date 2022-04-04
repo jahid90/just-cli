@@ -148,3 +148,7 @@ This will install the executable to `$GOBIN`. Adding `$GOBIN` to `$PATH` will al
 ```
 $ export PATH=$PATH:$GOBIN
 ```
+
+## TODO
+
+* Add keep-going flag to skip steps with error exit codes
