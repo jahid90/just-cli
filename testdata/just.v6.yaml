@@ -28,3 +28,12 @@ commands:
       - uses: action/action1@v2
       - name: Invoke ls
         run: ls
+  multi:step:
+    description: Run a multi-step alias
+    steps:
+      - name: list dir contents
+        run: ls
+      - name: fail step
+        run: false
+      - name: say bye
+        run: echo bye

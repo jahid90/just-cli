@@ -30,6 +30,8 @@ commands:
         run: just --config-file testdata/just.v5.yaml --list
       - name: Run v6 test
         run: just --config-file testdata/just.v6.yaml --list
+      - name: Run v6 multi step test
+        run: just --config-file testdata/just.v6.yaml -k multi:step
       - name: Run v7 test
         run: just --config-file testdata/just.v7.yaml --list
   hello:

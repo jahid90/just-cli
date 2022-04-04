@@ -82,8 +82,10 @@ func GenerateApi(config *Just) *api.JustApi {
 			}
 			logger.Debugf("alias matched a command: %#v", command)
 
-			unit := generateExecFrom(command)
-			e := executor.NewExecutor([]*executor.ExecutionUnit{unit})
+			cmd := generateExecFrom(command)
+
+			e := executor.NewExecutor()
+			e.AddExecutionUnit(cmd, "")
 
 			if err := e.Execute(); err != nil {
 				return err
@@ -108,12 +110,11 @@ func findCommandMatching(alias string, config *Just) (*Command, error) {
 	return nil, errors.New("no such alias is defined in config")
 }
 
-func generateExecFrom(command *Command) *executor.ExecutionUnit {
+func generateExecFrom(command *Command) *exec.Cmd {
 
 	var commandLine []string
 	commandLine = append(commandLine, "-c")
 	commandLine = append(commandLine, command.Exec)
 
-	cmd := generator.Generate(nil, "sh", commandLine)
-	return executor.NewExecutionUnit(cmd, "")
+	return generator.Generate(nil, "sh", commandLine)
 }

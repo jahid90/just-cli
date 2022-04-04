@@ -101,7 +101,7 @@ func generateContext(c *cli.Context) *api.Context {
 	ctx := api.NewApiContext()
 
 	if c.Bool("skip-failures") {
-		ctx.EnableSkipFailures()
+		ctx.WithSkipFailures()
 	}
 
 	return ctx

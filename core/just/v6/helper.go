@@ -94,19 +94,19 @@ func GenerateApi(config *Just, ctx *api.Context) *api.JustApi {
 				return err
 			}
 
-			execUnits, err := generateExecUnitsFrom(command, config)
-			if err != nil {
-				return err
-			}
-
 			logger.Info("executing steps")
 
 			var e *executor.Executor
 			if ctx.KeepGoing {
-				e = executor.NewSkipFailuresExecutor(execUnits)
+				e = executor.NewFailuresSkippingExecutor()
 			} else {
-				e = executor.NewExecutor(execUnits)
+				e = executor.NewExecutor()
 			}
+
+			if err := generateExecUnitsFrom(command, config, e); err != nil {
+				return err
+			}
+
 			e.Execute()
 
 			logger.Info("executing steps completed")
@@ -128,8 +128,7 @@ func findCommandMatching(alias string, config *Just) (*Command, error) {
 	return nil, errors.New("no alias matched")
 }
 
-func generateExecUnitsFrom(command *Command, config *Just) ([]*executor.ExecutionUnit, error) {
-	units := []*executor.ExecutionUnit{}
+func generateExecUnitsFrom(command *Command, config *Just, e *executor.Executor) error {
 
 	for _, step := range command.Steps {
 		if len(step.Uses) != 0 {
@@ -139,7 +138,7 @@ func generateExecUnitsFrom(command *Command, config *Just) ([]*executor.Executio
 
 		interpolatedRun, err := interpolateVars(step.Run, config.Variables)
 		if err != nil {
-			return nil, err
+			return err
 		}
 
 		var commandLine []string
@@ -153,10 +152,10 @@ func generateExecUnitsFrom(command *Command, config *Just) ([]*executor.Executio
 			desc = "step: " + step.Name
 		}
 
-		units = append(units, executor.NewExecutionUnit(cmd, desc))
+		e.AddExecutionUnit(cmd, desc)
 	}
 
-	return units, nil
+	return nil
 }
 
 func handleDepends(aliases []string, config *Just) error {
@@ -177,12 +176,11 @@ func handleDepends(aliases []string, config *Just) error {
 			return err
 		}
 
-		execUnits, err := generateExecUnitsFrom(command, config)
-		if err != nil {
+		e := executor.NewExecutor()
+		if err := generateExecUnitsFrom(command, config, e); err != nil {
 			return err
 		}
 
-		e := executor.NewExecutor(execUnits)
 		e.Execute()
 	}
 

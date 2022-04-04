@@ -1,20 +1,5 @@
 package api
 
-// Context The API context
-type Context struct {
-	KeepGoing bool
-}
-
-func NewApiContext() *Context {
-	return &Context{
-		KeepGoing: false,
-	}
-}
-
-func (c *Context) EnableSkipFailures() {
-	c.KeepGoing = true
-}
-
 // JustAPI The API for the `just` module
 type JustApi struct {
 	// The API context

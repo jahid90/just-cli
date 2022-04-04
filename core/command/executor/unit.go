@@ -6,19 +6,12 @@ import (
 	"github.com/jahid90/just/core/logger"
 )
 
-type ExecutionUnit struct {
+type executionUnit struct {
 	cmd         *exec.Cmd
 	description string
 }
 
-func NewExecutionUnit(cmd *exec.Cmd, description string) *ExecutionUnit {
-	return &ExecutionUnit{
-		cmd:         cmd,
-		description: description,
-	}
-}
-
-func (e *ExecutionUnit) execute() error {
+func (e *executionUnit) execute() error {
 	if e.description != "" {
 		logger.Info(e.description)
 	}
