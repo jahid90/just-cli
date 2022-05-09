@@ -6,85 +6,89 @@
 
 `just` is a command line tool to execute arbitrary commands.
 
-`just` uses a project specific config file to discover available commands and allows executing them via their defined aliases. `just` will look for a config file named `just.json` by default.
+`just` uses a project specific config file to discover available commands and allows executing them via their defined aliases. `just` will look for a config file named `just.yaml` or `just.json` by default.
 
-A `v1` config file example is shown below:
+### Usage
 
-```shell
-$ cd /a/project/directory
-$ cat just.json
-{
-  "version": "1",
-  "commands": {
-    "build": "npm run build",
-    "docker:build": "docker build -t image:tag .",
-    "docker:start": "docker-compose up -d",
-    "clean": "rm -rf ./dist/"
-  }
-}
-```
+```sh
+$ just --help
 
-`v2` and `v3` are currently work-in-progress. They parse the config file w.r.t. some grammar rules before executing the commands.
-
-`v4` executes the command using the underlying OS shell and supports environment variables and sub-command expansions.
-
-Any version above `v4` is currently unsupported.
-
-A `v4` config file example is presented below
-
-```json
-{
-    "version": "4",
-    "commands": {
-        "dev": "NODE_ENV=development,DEBUG=app:* yarn start",
-        "build": "NODE_ENV=production yarn build",
-        "test": "PROFILE=dev,PORT=9000,SECRET=password,USER=$USER ./mvnw test",
-        "docker:build": "docker build -t docker-image:local .",
-        "docker:run": "docker-compose up -d",
-        "k8s:generate": "VERSION=$(METADATA_FILE_NAME=.app-metadata.json get-version) envsubst < k8s/template.yaml > k8s/deployment.yaml",
-        "k8s:deploy": "kubectl apply -f k8s/deployment.yaml",
-        "done": "echo done",
-        "ls": "ls -lh",
-        "k8s:redeploy": "docker build -t $(app-name):$(get-version) . && kubectl apply -f k8s/deployment.yaml"
-    }
-}
-
-```
-
-## The `do` sub-command
-The `do` sub-command can be used to run the commands listed in a config file
-
-(**Note**: As of version `1.0.0`, the `do` sub-command is no longer needed to be specified explicitly. Any arguments to `just` is forwarded to the `do` sub-command if it does not match any other sub-commands. So for e.g., `just do build` can be replaced with `just build`)
-
-### Show help
-```shell
-$ just --help # or just help
 NAME:
    just - A command runner
 
 USAGE:
    just [global options] command [command options] [arguments...]
 
-...
+VERSION:
+   1.0.0 - 34b01060ca5275766c80e16f3370f8f5e0358020
+
+DESCRIPTION:
+   Runs commands defined by aliases in a config file.
+   Looks for a config file named just.json/just.yaml in the current directory.
+   A different config file can be provided using the `--config-file` switch
+
+   Usage examples:
+     To list the available commands, run `just --list`
+     To execute a command, run `just <alias>`
+
+   If no sub-command is passed, `do` is inferred.
+
+COMMANDS:
+   do       Runs a command
+   hello    Says hello
+   help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --config-file value, -c value  the config file to use (default: "just.json")
+   --config-file value, -c value  the config file to use
    --list, -l                     list the available commands (default: false)
+   --short, -s                    list a short version of the available commands (default: false)
+   --output value, -o value       Print config as json/yaml
+   --convert                      Convert config files between different versions (default: false)
+   --command value                Prints the command for a given alias
+   --vars value                   Uses provided vars to interpolate into runs  (accepts multiple inputs)
+   --skip-failures, -k            Keep going even if some steps fail (default: false)
    --help, -h                     show help (default: false)
    --version, -v                  print the version (default: false)
-
-$ just do --help
-NAME:
-   just do - Runs a command
-
-USAGE:
-   just do [command options] [arguments...]
-
-OPTIONS:
-   --list, -l  list the available commands (default: false)
-   --help, -h  show help (default: false)
-
 ```
+
+### Sample config file
+
+```sh
+$ cat just.yaml
+
+version: 6
+variables:
+   environ: production
+commands:
+  build:
+    description: Builds the app
+    steps:
+      - name: Invoke webpack
+        env:
+          - NODE_ENV={{ .environ }}
+        run: webpack-cli
+  test:
+    description: Tests the app
+    needs:
+      - build
+    steps:
+      - name: Invoke the test target
+        run: ./gradlew test
+  multi:step:
+    description: Run a multi-step alias
+    steps:
+      - name: list dir contents
+        run: ls
+      - name: fail step
+        run: false
+      - name: say bye
+        run: echo bye
+```
+
+### The `do` sub-command
+The `do` sub-command can be used to run the commands listed in a config file
+
+(**Note**: As of version `1.0.0`, the `do` sub-command is no longer needed to be specified explicitly. Any arguments to `just` is forwarded to the `do` sub-command if it does not match any other sub-commands. So for e.g., `just do build` can be replaced with `just build`)
 
 ### List available commands:
 
