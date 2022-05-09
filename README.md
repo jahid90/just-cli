@@ -1,4 +1,4 @@
-![Go](https://github.com/jahid90/just-cli/workflows/Go/badge.svg)
+[![build](https://github.com/jahid90/just-cli/actions/workflows/go.yml/badge.svg)](https://github.com/jahid90/just-cli/actions/workflows/go.yml)
 
 # JustCLI - A command runner
 
