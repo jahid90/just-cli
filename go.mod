@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/fatih/color v1.15.0
-	github.com/urfave/cli/v2 v2.24.3
-	gopkg.in/yaml.v3 v3.0.1
+	github.com/urfave/cli/v2 v2.26.0
+	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
